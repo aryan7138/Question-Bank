@@ -52,83 +52,6 @@ table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--ln
 #zrf{display:flex;gap:6px;padding:8px;border-top:1px solid var(--ln);margin:0}
 @media print{.app,#md,#ts,#zr{display:none}#print{display:block}.pg{padding:0!important;width:auto!important;min-height:0!important;zoom:1!important;overflow:visible!important}.pg .wm{position:fixed}}
 @media(max-width:760px){.app{grid-template-columns:1fr}nav{display:none}.mb{display:inline-block}body.nv nav{display:block;position:fixed;inset:0 20% 0 0;z-index:5}.sp,.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
-
-/* ================= Smooth micro-interactions ================= */
-html{-webkit-tap-highlight-color:transparent}
-*,*::before,*::after{-webkit-tap-highlight-color:transparent}
-button,a,summary,label,input,select,textarea,details{touch-action:manipulation}
-button,a,summary,input,select,textarea{transition-property:background-color,color,border-color,box-shadow,transform,opacity,filter}
-
-@keyframes pageIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes popIn{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
-@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-@keyframes slideIn{from{opacity:.35;transform:translateX(-16px)}to{opacity:1;transform:none}}
-
-#main{scroll-behavior:smooth}
-#main.anim{animation:pageIn .22s ease both}
-
-/* buttons */
-button{transition:background-color .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .12s ease,opacity .16s ease,filter .16s ease}
-button:not(:disabled):active{transform:scale(.97)}
-button:disabled{transform:none}
-button:not(.p):not(.d):hover:not(:disabled){background:#F1F5F9;border-color:#AEBACA}
-button.p:hover:not(:disabled){background:#215C9E;border-color:#215C9E;box-shadow:0 2px 8px rgba(29,78,137,.22)}
-button.d:hover:not(:disabled){background:#FAEDEB;border-color:#E0B3AD}
-button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
-
-/* sidebar + tabs */
-nav a,nav summary{transition:background-color .16s ease,color .16s ease,box-shadow .16s ease}
-nav a:hover,nav summary:hover{background:#F1F5F9}
-nav a.on{box-shadow:inset 3px 0 var(--ac)}
-.tabs a{transition:color .16s ease,border-color .16s ease,background-color .16s ease}
-.tabs a:hover{color:var(--ac);background:#F4F7FB}
-
-/* surfaces */
-.card{transition:box-shadow .2s ease,border-color .2s ease}
-.rw{transition:background-color .16s ease}
-.rw:hover{background:#F6F9FC}
-tbody tr{transition:background-color .16s ease}
-tbody tr:hover{background:#F6F9FC}
-
-/* fields */
-input,select,textarea{transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(29,78,137,.13)}
-input[type=checkbox],input[type=radio]{accent-color:var(--ac);cursor:pointer;transition:transform .12s ease}
-input[type=checkbox]:active,input[type=radio]:active{transform:scale(.9)}
-
-/* top bar buttons */
-#bar>*{animation:msgIn .18s ease both}
-
-/* modal */
-#md.on{display:flex;animation:fadeIn .15s ease both}
-#md .mb2{animation:popIn .2s cubic-bezier(.2,.8,.3,1) both}
-
-/* toast */
-#ts{transform:translateX(-50%) translateY(10px);transition:opacity .22s ease,transform .22s ease}
-#ts.on{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* assistant */
-#zrb{transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
-#zrb:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
-#zrb:active{transform:scale(.93)}
-#zrp{transform-origin:100% 100%}
-#zrp.in{animation:popIn .2s cubic-bezier(.2,.8,.3,1)}
-#zrh button{transition:background-color .16s ease,transform .12s ease}
-#zrh button:hover{background:#D8E5F4;border-radius:4px}
-.zmsg{animation:msgIn .18s ease both}
-.zfb button{transition:background-color .16s ease,border-color .16s ease,transform .12s ease}
-.zfb button:active{transform:scale(.94)}
-.zchips button{transition:background-color .16s ease,border-color .16s ease,color .16s ease,transform .12s ease}
-.zchips button:hover{background:var(--hl);color:var(--ac);border-color:var(--ac)}
-.zchips button:active{transform:scale(.95)}
-
-@media(max-width:760px){body.nv nav{animation:slideIn .2s ease both}}
-
-@media (prefers-reduced-motion:reduce){
- *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
-}
-@media print{*,*::before,*::after{animation:none!important;transition:none!important}}
 </style></head><body>
 <div class=app><nav id=nv></nav><main><div class=top><button id=bk data-a=back>Back</button><button class=mb data-a=menu>Menu</button><span id=bc class=mu></span></div><div id=bar></div><div id=main></div></main></div>
 <div id=print></div><div id=md></div><div id=zr></div><div id=ts></div><datalist id=subs></datalist><datalist id=clss></datalist><datalist id=ins></datalist><datalist id=exm></datalist><style id=pgs></style>
@@ -162,7 +85,7 @@ const lp=d=>{const n=np();if(!d||typeof d!='object'||!Array.isArray(d.sec)||!d.s
 return{...n,...d,ins:String(d.ins??''),st:sanSt(d.st),sec:d.sec.map((s,i)=>({...DSEC('MCQ',1,i),...(s||{}),items:Array.isArray(s&&s.items)?s.items.filter(x=>x&&typeof x==='object'):[]}))}};
 let P=lp(D.draft),R='dash',H=[],SI=0,EQ=null,DQ=null,Rv=[],PN=[],VIS=[],SEL={},PK={},TB={s:0,n:0,b:0},tm,t0;
 const X={F:{s:'',x:'',sub:'',cls:'',ty:'',so:'ch'},BP:{txt:'',sub:'',cls:'',ch:'',stem:1,deft:'Short'},MS:{s:''},AU:{n:5,mx:0,o:'r',av:1,ch:''},RP:{id:'',so:0},SV:{s:'',g:'at'},TN:'',VN:'',RJ:''},RF={},AF={},S={},A={};
-const toast=m=>{const t=$('#ts');t.textContent=m;t.classList.add('on');clearTimeout(t0);t0=setTimeout(()=>t.classList.remove('on'),2600)};
+const toast=m=>{const t=$('#ts');t.textContent=m;t.style.opacity=1;clearTimeout(t0);t0=setTimeout(()=>t.style.opacity=0,2600)};
 const FSA=typeof window!=='undefined'&&'showSaveFilePicker' in window&&'showOpenFilePicker' in window;
 const idb=(()=>{let dbp;const open=()=>dbp||(dbp=new Promise((res,rej)=>{const r=indexedDB.open('sqpm-fs',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}));
 const tx=async(m,f)=>{try{const db=await open();return await new Promise((res,rej)=>{const t=db.transaction('h',m),q=f(t.objectStore('h'));t.oncomplete=()=>res(q?q.result:null);t.onerror=()=>rej(t.error)})}catch(e){return null}};
@@ -229,8 +152,7 @@ const i=PS.indexOf(R);let b=(BR[R]||[]).map(([l,r])=>`<button data-a=go data-r="
 if(i>=0)b=(i?`<button data-a=go data-r="${PS[i-1]}">Previous step</button>`:'')+(i<3?`<button class=p data-a=go data-r="${PS[i+1]}">Next step</button>`:'')+'<button data-a=pdf>Download PDF</button><button data-a=txt>Download TXT</button><button data-a=print>Print</button><button data-a=newp>New paper</button>';
 $('#bar').innerHTML=b;
 $('#subs').innerHTML=ol([...D.q.map(q=>q.sub),'বাংলা','English','Mathematics','Physics','Chemistry','Biology']);$('#clss').innerHTML=ol([...D.q.map(q=>q.cls),'6','7','8','9','10','11','12']);$('#ins').innerHTML=ol([...D.insts,DEFINST]);$('#exm').innerHTML=ol([...D.exams,'Half-yearly','Annual','Model test','Monthly Test']);
-const M=$('#main');M.innerHTML=S[R]();AF[R]&&AF[R]();pv();
-M.classList.remove('anim');void M.offsetWidth;M.classList.add('anim')}
+$('#main').innerHTML=S[R]();AF[R]&&AF[R]();pv()}
 function go(r){if(r!=R){H.push(R);R=r}document.body.classList.remove('nv');draw();$('#main').scrollTop=0}
 const ed=()=>{D.draft=P;sv();draw()};
 const QE=q=>{const c=q.type=='CQ',m=q.type=='MCQ',lb=q.en?'ABCDE':L,n=q.five?5:4,fv=(k,l,l2)=>`<label>${l}<input data-f=${k} value="${E(q[k])}"${l2?` list=${l2}`:''}></label>`;
@@ -246,7 +168,7 @@ const qt=q=>(q.stem?q.stem+' ':'')+q.text+(q.type=='MCQ'?' '+q.o.slice(0,q.five?
 const tk=q=>new Set(qt(q).toLowerCase().split(/[\s,.;:()\[\]?!।]+/).filter(Boolean)),sim2=(a,b)=>{const x=tk(a),y=tk(b),i=[...x].filter(w=>y.has(w)).length;return i/((x.size+y.size-i)||1)};
 const dup=(a,b)=>new Promise(r=>{const m=$('#md'),v=q=>`<div class=card><span class=bd>${q.type}</span> <span class=bd>Ch ${E(q.ch)}</span><p>${ET(qt(q))}</p></div>`;
 m.innerHTML=`<div class=mb2><b>Similar question found</b><div class=g2><div><div class=mu>Existing in bank</div>${v(a)}</div><div><div class=mu>New</div>${v(b)}</div></div><div class=row><button data-dr=both>Keep both</button><button data-dr=replace>Replace existing</button><button class=d data-dr=skip>Skip new</button></div></div>`;
-m.classList.add('on');m.onclick=e=>{const d=e.target.dataset.dr;if(d){m.classList.remove('on');r(d)}}});
+m.style.display='flex';m.onclick=e=>{const d=e.target.dataset.dr;if(d){m.style.display='none';r(d)}}});
 async function saveQs(list){let n=0,s=0;for(const q of list){if(!q.text.trim()&&!q.stem.trim())continue;const d=D.q.find(x=>x.id!==q.id&&sim2(x,q)>=.7);let a='both';if(d)a=await dup(d,q);
 if(a=='skip'){s++;continue}if(a=='replace')D.q=D.q.filter(x=>x.id!==d.id);const i=D.q.findIndex(x=>x.id===q.id);i<0?D.q.push(q):D.q[i]=q;n++}sv();return[n,s]}
 function parse(t,r){const out=[],nr=/^(?:Q\.?\s*)?(?:\(([0-9০-৯]+)\)|([0-9০-৯]+)\s*[.।):])\s*(.*)$/i,or=/^\(?([কখগঘঙ]|[A-Ea-e])\s*[).।]\s*(.*)$/,sr=/^(উদ্দীপক|stem|passage)\s*[:：-]?\s*(.*)$/i;let c=null,md='',m;
@@ -506,7 +428,7 @@ if(f){zpush('zbot',`"${E(q)}" — you'll find it under <b>${E(f.path.join(' → 
 (D.zlog=D.zlog||[]).push({q,t:Date.now()});sv();
 zpush('zbot',"I couldn't find a match for that. It's been saved under Settings → Assistant Log so a rule can be added later.");
 zsetChips()}
-function zopen(v){if(v){lastFocus=document.activeElement;const a=document.querySelector('.app');a&&a.setAttribute('inert','');zp.hidden=false;zp.classList.remove('in');void zp.offsetWidth;zp.classList.add('in');if(!greeted){greeted=1;zpush('zbot','Assalam\'ulaikum! I\'m <b>Zillur Rahman</b>. Ask me where any option lives — I\'ll point you to it.',null,true)}zsetChips();zi.focus()}else{zp.hidden=true;const a=document.querySelector('.app');a&&a.removeAttribute('inert');lastFocus&&lastFocus.focus&&lastFocus.focus()}}
+function zopen(v){if(v){lastFocus=document.activeElement;const a=document.querySelector('.app');a&&a.setAttribute('inert','');zp.hidden=false;if(!greeted){greeted=1;zpush('zbot','Assalam\'ulaikum! I\'m <b>Zillur Rahman</b>. Ask me where any option lives — I\'ll point you to it.',null,true)}zsetChips();zi.focus()}else{zp.hidden=true;const a=document.querySelector('.app');a&&a.removeAttribute('inert');lastFocus&&lastFocus.focus&&lastFocus.focus()}}
 $('#zrb').onclick=()=>zopen(zp.hidden);
 $('#zrx').onclick=()=>zopen(0);
 $('#zrf').onsubmit=e=>{e.preventDefault();const q=zi.value;zi.value='';zask(q)};
