@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="bn">
+<head><meta charset="utf-8"><title>Smart Question Paper Maker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600&family=Noto+Serif+Bengali:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E9EDF1;--sf:#fff;--ink:#16212F;--mu:#5B6776;--ln:#C9D1DA;--ac:#1D4E89;--ak:#fff;--hl:#E4EDF8;--wr:#A3281E;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{height:100%;margin:0}body{background:var(--bg);color:var(--ink);font:14px/1.45 'Noto Sans Bengali',system-ui,'Segoe UI',Arial,sans-serif}
+.app{display:grid;grid-template-columns:232px minmax(0,1fr);height:100%}
+nav{background:var(--sf);border-right:1px solid var(--ln);overflow:auto;padding:12px 0}.br{font-weight:600;padding:0 16px 10px;border-bottom:1px solid var(--ln);margin-bottom:6px}
+nav a,nav summary{display:block;padding:7px 16px;cursor:pointer;color:var(--ink)}nav details>div{padding-left:14px}nav a.on{background:var(--hl);color:var(--ac);font-weight:600;box-shadow:inset 3px 0 var(--ac)}
+main{display:flex;flex-direction:column;min-width:0;height:100%}.top,#bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid var(--ln);background:var(--sf)}#bar:empty{display:none}
+#main{flex:1;overflow:auto;padding:16px}.mb{display:none}
+button{font:inherit;border:1px solid var(--ln);background:var(--sf);color:var(--ink);padding:5px 12px;border-radius:3px;cursor:pointer}button:disabled{opacity:.4}button.p{background:var(--ac);color:var(--ak);border-color:var(--ac)}button.d{color:var(--wr)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:3px;padding:5px 7px;width:100%;box-sizing:border-box}
+label{display:block;font-size:12px;color:var(--mu);margin:0 0 8px}label>input,label>select,label>textarea{margin-top:3px}
+.g2,.g3,.g4,.g5{display:grid;gap:10px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}.g5{grid-template-columns:repeat(6,1fr)}
+.sp{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:16px;align-items:start}
+.card{background:var(--sf);border:1px solid var(--ln);padding:12px;margin-bottom:10px;border-radius:3px}.stem textarea{background:var(--hl)}
+.card pre{background:var(--bg);padding:8px;border-radius:3px;overflow:auto;font-size:12px;margin:6px 0}
+.tabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--ln);margin-bottom:12px}.tabs a{padding:7px 12px;cursor:pointer;color:var(--mu)}.tabs a.on{color:var(--ac);border-bottom:2px solid var(--ac);font-weight:600}
+table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid var(--ln);padding:6px;text-align:left;vertical-align:top}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:6px 0}.row>input{width:auto}.mu{color:var(--mu)}.wr{color:var(--wr)}.big{font-size:26px;font-weight:600}
+.bd{font-size:11px;border:1px solid var(--ln);padding:0 5px;border-radius:2px;color:var(--mu)}.rw{display:flex;gap:6px;padding:5px 0;border-bottom:1px solid var(--ln);color:var(--ink);font-size:13px;margin:0}.rw input{width:auto}
+#pvw{overflow:auto;background:#8C97A4;padding:12px}.pg{background:#fff;color:#000;margin:0 auto;position:relative;box-sizing:border-box;overflow:hidden}
+.pg .q{position:relative;margin:0 0 var(--ps)}.pg .op{display:grid;gap:2px 14px;margin:3px 0 0 1.6em}.pg .stem{margin:4px 0 4px 1.6em;padding:4px 8px;border-left:3px solid #000}.pg .sq{margin-left:1.6em}.pg .sc{margin-top:12px}.pg .mr{display:flex;justify-content:space-between}.pg .in{margin:6px 0;font-size:.9em}.pg .in ol{margin:2px 0;padding-left:1.4em}
+.pg .wm{position:absolute;top:40%;left:0;right:0;text-align:center;font-size:60pt;opacity:.08;transform:rotate(-30deg);pointer-events:none}.pg .logo{width:56px;height:56px;border:1px dashed #000;margin:0 auto 4px;font-size:10px;line-height:56px}
+#print,#md{display:none}#md{position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;z-index:9}.mb2{background:var(--sf);padding:16px;max-width:760px;width:92%;border-radius:4px;max-height:90%;overflow:auto}
+#ts{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:7px 14px;border-radius:3px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:10}
+[data-g="BP.txt"]{min-height:260px}
+#zr{position:fixed;right:16px;bottom:16px;z-index:20;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+#zrb{width:46px;height:46px;border-radius:50%;background:var(--ac);color:var(--ak);border:none;padding:0;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px #0003}
+#zrb:hover{filter:brightness(1.08)}
+#zrp{width:min(360px,calc(100vw - 32px));max-height:min(480px,72dvh);background:var(--sf);border:1px solid var(--ln);border-radius:6px;box-shadow:0 10px 30px #0003;display:flex;flex-direction:column;overflow:hidden}
+#zrp[hidden]{display:none}
+#zrh{display:flex;align-items:center;gap:7px;padding:8px 10px;border-bottom:1px solid var(--ln);background:var(--hl);color:var(--ac);font-weight:600;font-size:13px}
+#zrh button{border:none;background:none;font-size:18px;line-height:1;padding:0 4px;color:inherit;cursor:pointer}
+#zrh #zrv{font-size:15px}
+#zrm{flex:1;overflow:auto;padding:10px;font-size:13px}
+.zmsg{margin:0 0 8px;padding:7px 9px;border-radius:6px;max-width:94%;line-height:1.55}
+.zme{background:var(--hl);margin-left:auto}
+.zbot{background:var(--bg)}
+.zgo{margin-top:6px;font-size:12px;padding:3px 9px}
+.zfb{display:flex;gap:4px;margin-top:5px;align-items:center}
+.zfb button{font-size:12px;padding:2px 8px;border-radius:10px;color:var(--mu);border:1px solid transparent}
+.zfb button:hover{border-color:var(--ln)}
+.zfb .mu{font-size:11px}
+.zchips{display:flex;flex-wrap:wrap;gap:5px;padding:0 10px 8px}
+.zchips:empty{display:none}
+.zchips button{font-size:12px;padding:3px 9px;border-radius:12px;color:var(--mu)}
+#zrf{display:flex;gap:6px;padding:8px;border-top:1px solid var(--ln);margin:0}
+@media print{.app,#md,#ts,#zr{display:none}#print{display:block}.pg{padding:0!important;width:auto!important;min-height:0!important;zoom:1!important;overflow:visible!important}.pg .wm{position:fixed}}
+@media(max-width:760px){.app{grid-template-columns:1fr}nav{display:none}.mb{display:inline-block}body.nv nav{display:block;position:fixed;inset:0 20% 0 0;z-index:5}.sp,.g2,.g3,.g4,.g5{grid-template-columns:1fr}}
+
+/* ================= Smooth micro-interactions ================= */
+html{-webkit-tap-highlight-color:transparent}
+*,*::before,*::after{-webkit-tap-highlight-color:transparent}
+button,a,summary,label,input,select,textarea,details{touch-action:manipulation}
+button,a,summary,input,select,textarea{transition-property:background-color,color,border-color,box-shadow,transform,opacity,filter}
+
+@keyframes pageIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(6px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes msgIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{opacity:.35;transform:translateX(-16px)}to{opacity:1;transform:none}}
+
+#main{scroll-behavior:smooth}
+#main.anim{animation:pageIn .22s ease both}
+
+/* buttons */
+button{transition:background-color .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease,transform .12s ease,opacity .16s ease,filter .16s ease}
+button:not(:disabled):active{transform:scale(.97)}
+button:disabled{transform:none}
+button:not(.p):not(.d):hover:not(:disabled){background:#F1F5F9;border-color:#AEBACA}
+button.p:hover:not(:disabled){background:#215C9E;border-color:#215C9E;box-shadow:0 2px 8px rgba(29,78,137,.22)}
+button.d:hover:not(:disabled){background:#FAEDEB;border-color:#E0B3AD}
+button:focus-visible{outline:2px solid var(--ac);outline-offset:1px}
+
+/* sidebar + tabs */
+nav a,nav summary{transition:background-color .16s ease,color .16s ease,box-shadow .16s ease}
+nav a:hover,nav summary:hover{background:#F1F5F9}
+nav a.on{box-shadow:inset 3px 0 var(--ac)}
+.tabs a{transition:color .16s ease,border-color .16s ease,background-color .16s ease}
+.tabs a:hover{color:var(--ac);background:#F4F7FB}
+
+/* surfaces */
+.card{transition:box-shadow .2s ease,border-color .2s ease}
+.rw{transition:background-color .16s ease}
+.rw:hover{background:#F6F9FC}
+tbody tr{transition:background-color .16s ease}
+tbody tr:hover{background:#F6F9FC}
+
+/* fields */
+input,select,textarea{transition:border-color .16s ease,box-shadow .16s ease,background-color .16s ease}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3px rgba(29,78,137,.13)}
+input[type=checkbox],input[type=radio]{accent-color:var(--ac);cursor:pointer;transition:transform .12s ease}
+input[type=checkbox]:active,input[type=radio]:active{transform:scale(.9)}
+
+/* top bar buttons */
+#bar>*{animation:msgIn .18s ease both}
+
+/* modal */
+#md.on{display:flex;animation:fadeIn .15s ease both}
+#md .mb2{animation:popIn .2s cubic-bezier(.2,.8,.3,1) both}
+
+/* toast */
+#ts{transform:translateX(-50%) translateY(10px);transition:opacity .22s ease,transform .22s ease}
+#ts.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* assistant */
+#zrb{transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}
+#zrb:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
+#zrb:active{transform:scale(.93)}
+#zrp{transform-origin:100% 100%}
+#zrp.in{animation:popIn .2s cubic-bezier(.2,.8,.3,1)}
+#zrh button{transition:background-color .16s ease,transform .12s ease}
+#zrh button:hover{background:#D8E5F4;border-radius:4px}
+.zmsg{animation:msgIn .18s ease both}
+.zfb button{transition:background-color .16s ease,border-color .16s ease,transform .12s ease}
+.zfb button:active{transform:scale(.94)}
+.zchips button{transition:background-color .16s ease,border-color .16s ease,color .16s ease,transform .12s ease}
+.zchips button:hover{background:var(--hl);color:var(--ac);border-color:var(--ac)}
+.zchips button:active{transform:scale(.95)}
+
+@media(max-width:760px){body.nv nav{animation:slideIn .2s ease both}}
+
+@media (prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+}
+@media print{*,*::before,*::after{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class=app><nav id=nv></nav><main><div class=top><button id=bk data-a=back>Back</button><button class=mb data-a=menu>Menu</button><span id=bc class=mu></span></div><div id=bar></div><div id=main></div></main></div>
+<div id=print></div><div id=md></div><div id=zr></div><div id=ts></div><datalist id=subs></datalist><datalist id=clss></datalist><datalist id=ins></datalist><datalist id=exm></datalist><style id=pgs></style>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],U=()=>Math.random().toString(36).slice(2,9),cl=o=>JSON.parse(JSON.stringify(o));
+const E=s=>String(s??'').replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';'),ET=s=>E(s).replace(/\n/g,'<br>');
+const bn=n=>String(n).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]),L=['ক','খ','গ','ঘ','ঙ'],RO='I II III IV V VI VII VIII IX X XI XII XIII XIV XV'.split(' ');
+const NUM={ar:i=>i+1,bn:i=>bn(i+1),ro:i=>RO[i]||i+1,al:i=>String.fromCharCode(65+i%26),bl:i=>L[i%5]};
+const gp=(o,p)=>p.split('.').reduce((a,k)=>a?.[k],o),sp=(o,p,v)=>{const k=p.split('.'),l=k.pop();k.reduce((a,x)=>a[x],o)[l]=v};
+const DEFINST='BAZLUL HUQ KHAN SCHOOL AND COLLEGE';
+const nq=()=>({id:U(),sub:'',cls:'',ch:'',type:'MCQ',text:'',stem:'',en:false,five:false,ans:'',o:['','','','',''],s:[0,1,2,3].map(()=>({t:'',m:'',k:''})),at:Date.now()});
+const lq=q=>{const n=nq(),x=q&&typeof q==='object'?q:{};return{...n,...x,type:['MCQ','CQ','Short'].includes(x.type)?x.type:'Short',o:[0,1,2,3,4].map(i=>String((Array.isArray(x.o)?x.o:[])[i]??'')),s:[0,1,2,3].map(i=>({t:'',m:'',k:'',...(((Array.isArray(x.s)?x.s:[])[i])||{})}))}};
+const fixD=d=>{d=d&&typeof d==='object'&&!Array.isArray(d)?d:{};d={q:[],p:[],t:[],insts:[DEFINST],exams:[],...d};['q','p','t','insts','exams'].forEach(k=>{if(!Array.isArray(d[k]))d[k]=k=='insts'?[DEFINST]:[]});d.q=d.q.filter(x=>x&&typeof x==='object').map(lq);return d};
+let D;try{D=JSON.parse(localStorage.getItem('sqpm'))}catch(e){}
+D=fixD(D);
+const sv=()=>{try{localStorage.setItem('sqpm',JSON.stringify(D))}catch(e){try{toast('Storage is full. Save a backup file now.')}catch(_){}}};
+if(!D.snapAt||Date.now()-D.snapAt>6048e5){const{snap,zlog,...r}=D;D.snap=JSON.stringify(r);D.snapAt=Date.now();sv()}
+const DSEC=(type='MCQ',marks=1,i=0)=>({id:U(),title:'Section '+String.fromCharCode(65+i),type,marks,num:'bn',ins:'',tot:'',items:[]});
+const np=()=>({id:U(),name:'Untitled paper',inst:DEFINST,exam:'',cls:'',sub:'',date:'',time:'',full:'',pass:'',ins:'',st:{ff:"'Noto Serif Bengali'",fs:13,hfs:18,ofs:13,ls:1.5,ps:8,al:'left',pg:'A4',cw:210,chh:297,mt:15,mb:15,ml:15,mr:15,opt:2,mk:'end',sh:'bold',hb:1,logo:0,wm:'',ft:'',pn:'center',tint:0,keep:1},sec:[DSEC('MCQ',1,0)]});
+const sanSt=o=>{const d=np().st,s={...d,...(o&&typeof o==='object'?o:{})};
+for(const k of['fs','hfs','ofs','ls','ps','mt','mb','ml','mr','cw','chh']){const v=s[k];s[k]=v===''||v==null||!Number.isFinite(+v)?d[k]:+v}
+s.opt=[1,2,3,4].includes(+s.opt)?+s.opt:2;
+s.ff=String(s.ff||'').replace(/[^\w\s,'-]/g,'')||d.ff;
+if(!['left','center','right','justify'].includes(s.al))s.al='left';
+if(!['A4','Letter','Legal','Custom'].includes(s.pg))s.pg='A4';
+if(!['end','margin','hide'].includes(s.mk))s.mk='end';
+if(!['bold','underline','box'].includes(s.sh))s.sh='bold';
+if(!['center','right','none'].includes(s.pn))s.pn='center';
+s.wm=String(s.wm??'');s.ft=String(s.ft??'');return s};
+const lp=d=>{const n=np();if(!d||typeof d!='object'||!Array.isArray(d.sec)||!d.sec.length)return n;
+return{...n,...d,ins:String(d.ins??''),st:sanSt(d.st),sec:d.sec.map((s,i)=>({...DSEC('MCQ',1,i),...(s||{}),items:Array.isArray(s&&s.items)?s.items.filter(x=>x&&typeof x==='object'):[]}))}};
+let P=lp(D.draft),R='dash',H=[],SI=0,EQ=null,DQ=null,Rv=[],PN=[],VIS=[],SEL={},PK={},TB={s:0,n:0,b:0},tm,t0;
+const X={F:{s:'',x:'',sub:'',cls:'',ty:'',so:'ch'},BP:{txt:'',sub:'',cls:'',ch:'',stem:1,deft:'Short'},MS:{s:''},AU:{n:5,mx:0,o:'r',av:1,ch:''},RP:{id:'',so:0},SV:{s:'',g:'at'},TN:'',VN:'',RJ:''},RF={},AF={},S={},A={};
+const toast=m=>{const t=$('#ts');t.textContent=m;t.classList.add('on');clearTimeout(t0);t0=setTimeout(()=>t.classList.remove('on'),2600)};
+const FSA=typeof window!=='undefined'&&'showSaveFilePicker' in window&&'showOpenFilePicker' in window;
+const idb=(()=>{let dbp;const open=()=>dbp||(dbp=new Promise((res,rej)=>{const r=indexedDB.open('sqpm-fs',1);r.onupgradeneeded=()=>r.result.createObjectStore('h');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}));
+const tx=async(m,f)=>{try{const db=await open();return await new Promise((res,rej)=>{const t=db.transaction('h',m),q=f(t.objectStore('h'));t.oncomplete=()=>res(q?q.result:null);t.onerror=()=>rej(t.error)})}catch(e){return null}};
+return{get:k=>tx('readonly',s=>s.get(k)),set:(k,v)=>tx('readwrite',s=>s.put(v,k)),del:k=>tx('readwrite',s=>s.delete(k))}})();
+const dl=(name,text)=>{const u=URL.createObjectURL(new Blob([text],{type:'application/json'})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)};
+const dlText=(name,text)=>{const u=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000)};
+function paperToText(p){
+p=lp(p);const line='='.repeat(64);
+let t=`${line}\n${p.inst}\n${p.exam}\n${line}\n`;
+t+=`Class: ${p.cls}    Subject: ${p.sub}\n`;
+t+=`Date: ${p.date}    Time: ${p.time}\n`;
+t+=`Full Marks: ${p.full}    Pass Marks: ${p.pass}\n\n`;
+const ins=p.ins.split('\n').filter(x=>x.trim());
+if(ins.length){t+='Instructions:\n';ins.forEach((x,i)=>t+=`  ${i+1}. ${x}\n`);t+='\n'}
+p.sec.forEach(sc=>{
+t+=`\n[ ${sc.title} ]`;if(sc.tot!=='')t+=`  (${sc.tot} marks)`;t+='\n';
+if(sc.ins)t+=`  ${sc.ins}\n`;
+sc.items.forEach((it,idx)=>{
+const q=D.q.find(x=>x.id==it.q);if(!q)return;
+const mk=it.m??sc.marks;
+t+=`${idx+1}. ${q.text}`;if(q.type!=='CQ'&&mk!=='')t+=` [${mk}]`;t+='\n';
+if(q.type=='CQ'&&q.stem)t+=`   Passage: ${q.stem}\n`;
+if(q.type=='MCQ'){const lb=q.en?['A','B','C','D','E']:['ক','খ','গ','ঘ','ঙ'];
+q.o.slice(0,q.five?5:4).forEach((o,j)=>{if(o.trim())t+=`   ${lb[j]}) ${o}\n`})}
+if(q.type=='CQ'){const lb=['ক','খ','গ','ঘ'];
+q.s.forEach((x,j)=>{if(x.t.trim()){t+=`   ${lb[j]}) ${x.t}`;if(x.m!=='')t+=` [${x.m}]`;t+='\n'}})}
+t+='\n';});});
+return t;
+}
+async function saveText(name,text,hint){
+if(!FSA){dl(name,text);toast('Saved to your downloads folder.');return{name}}
+try{
+let h=null;
+if(hint){h=await idb.get(hint);if(h){let p=await h.queryPermission({mode:'readwrite'});if(p!=='granted')p=await h.requestPermission({mode:'readwrite'});if(p!=='granted')h=null}}
+if(!h)h=await window.showSaveFilePicker({suggestedName:name,types:[{description:'JSON file',accept:{'application/json':['.json']}}]});
+const w=await h.createWritable();await w.write(text);await w.close();
+if(hint)idb.set(hint,h);
+return h
+}catch(e){if(e&&e.name==='AbortError')return null;dl(name,text);toast('File picker unavailable, so it was downloaded instead.');return{name}}}
+const pickFile=()=>new Promise(r=>{const i=document.createElement('input');i.type='file';i.accept='.json,application/json';i.onchange=()=>{const f=i.files[0];if(!f)return r(null);const rd=new FileReader();rd.onload=()=>r(rd.result);rd.onerror=()=>r(null);rd.readAsText(f)};i.click()});
+async function openText(){
+if(!FSA)return pickFile();
+try{
+const[h]=await window.showOpenFilePicker({multiple:false,types:[{description:'JSON file',accept:{'application/json':['.json']}}]});
+return await(await h.getFile()).text()
+}catch(e){if(e&&e.name==='AbortError')return null;return pickFile()}}
+const rt=p=>p[0]=='$'?[X,p.slice(1),'g']:p[0]=='#'?[D,p.slice(1),'d']:p[0]=='@'?[AICFG,p.slice(1),'x']:[P,p,'k'];
+const fl=(p,lb,t='t',o)=>{const[r,k,a]=rt(p),v=gp(r,k)??'',at=`data-${a}="${k}"`;
+if(t=='ta'||t=='tl')return`<label>${lb}<textarea ${at}${t=='tl'?' data-ls=1':''} rows=4>${E([].concat(v).join('\n'))}</textarea></label>`;
+if(t=='s')return`<label>${lb}<select ${at}>${o.map(x=>{x=[].concat(x);return`<option value="${E(x[0])}"${x[0]==v?' selected':''}>${E(x[1]??x[0])}</option>`}).join('')}</select></label>`;
+if(t=='c')return`<label><input type=checkbox ${at}${v?' checked':''} style="width:auto"> ${lb}</label>`;
+if(t=='password')return`<label>${lb}<input type=password ${at} value="${E(v)}"></label>`;
+return`<label>${lb}<input type=${t=='n'?'number step=any':t=='d'?'date':'text'} ${at} value="${E(v)}"${o?` list=${o}`:''}></label>`};
+const tabs=(a,f)=>`<div class=tabs>${a.map((t,j)=>`<a class="${TB[f]==j?'on':''}" data-a=tb data-f=${f} data-i=${j}>${t}</a>`).join('')}</div>`;
+const T=[{id:'dash',t:'Dashboard'},{t:'Question Bank',c:[{id:'bank/all',t:'All Questions'},{t:'Add Questions',c:[{id:'bank/single',t:'Single Entry'},{id:'bank/bulk',t:'Bulk Paste'}]}]},{t:'Create Paper',c:[{id:'paper/setup',t:'Paper Setup'},{id:'paper/sec',t:'Sections Manager'},{id:'paper/sel',t:'Question Selection'},{id:'paper/out',t:'Generate and Preview'},{id:'paper/lib',t:'Drafts and Templates'}]},{id:'saved',t:'Saved Papers'},{t:'Settings',c:[{id:'set/app',t:'Appearance and Defaults'},{id:'set/ai',t:'AI Assistant'},{id:'set/log',t:'Assistant Log'},{id:'set/bak',t:'Backup and Restore'}]},{id:'guide',t:'User Guide'}];
+const PS=['paper/setup','paper/sec','paper/sel','paper/out'],BR={dash:[['Add question','bank/single'],['Create paper','paper/setup'],['Saved papers','saved']],'bank/all':[['Add question','bank/single'],['Bulk paste','bank/bulk']],'bank/single':[['All questions','bank/all'],['Bulk paste','bank/bulk']],'bank/bulk':[['All questions','bank/all'],['Single entry','bank/single']]};
+const nv=a=>a.map(x=>x.c?`<details open><summary>${x.t}</summary><div>${nv(x.c)}</div></details>`:`<a data-a=go data-r="${x.id}">${x.t}</a>`).join('');
+const cr=(a,id,p=[])=>{for(const x of a){const q=[...p,x.t];if(x.id==id)return q;if(x.c){const r=cr(x.c,id,q);if(r)return r}}};
+const ol=a=>[...new Set(a.filter(Boolean))].map(x=>`<option value="${E(x)}">`).join('');
+function draw(){if(R!='bank/single')EQ=null;
+$('#nv').innerHTML='<div class=br>Smart Question Paper Maker</div>'+nv(T);$$('#nv a').forEach(a=>a.classList.toggle('on',a.dataset.r==R));
+$('#bc').textContent=(cr(T,R)||[]).join('  /  ');$('#bk').disabled=!H.length;
+const i=PS.indexOf(R);let b=(BR[R]||[]).map(([l,r])=>`<button data-a=go data-r="${r}">${l}</button>`).join('');
+if(i>=0)b=(i?`<button data-a=go data-r="${PS[i-1]}">Previous step</button>`:'')+(i<3?`<button class=p data-a=go data-r="${PS[i+1]}">Next step</button>`:'')+'<button data-a=pdf>Download PDF</button><button data-a=txt>Download TXT</button><button data-a=print>Print</button><button data-a=newp>New paper</button>';
+$('#bar').innerHTML=b;
+$('#subs').innerHTML=ol([...D.q.map(q=>q.sub),'বাংলা','English','Mathematics','Physics','Chemistry','Biology']);$('#clss').innerHTML=ol([...D.q.map(q=>q.cls),'6','7','8','9','10','11','12']);$('#ins').innerHTML=ol([...D.insts,DEFINST]);$('#exm').innerHTML=ol([...D.exams,'Half-yearly','Annual','Model test','Monthly Test']);
+const M=$('#main');M.innerHTML=S[R]();AF[R]&&AF[R]();pv();
+M.classList.remove('anim');void M.offsetWidth;M.classList.add('anim')}
+function go(r){if(r!=R){H.push(R);R=r}document.body.classList.remove('nv');draw();$('#main').scrollTop=0}
+const ed=()=>{D.draft=P;sv();draw()};
+const QE=q=>{const c=q.type=='CQ',m=q.type=='MCQ',lb=q.en?'ABCDE':L,n=q.five?5:4,fv=(k,l,l2)=>`<label>${l}<input data-f=${k} value="${E(q[k])}"${l2?` list=${l2}`:''}></label>`;
+return`<div class=g3>${fv('sub','Subject','subs')}${fv('cls','Class','clss')}${fv('ch','Chapter number')}</div><label>Question type<select data-f=type>${['MCQ','CQ','Short'].map(t=>`<option${t==q.type?' selected':''}>${t}</option>`).join('')}</select></label>
+${c?`<label class=stem>উদ্দীপক (stem or passage)<textarea data-f=stem rows=6>${E(q.stem)}</textarea></label>`:''}
+<label>${c?'Lead-in text (optional)':'Question text'}<textarea data-f=text rows=3>${E(q.text)}</textarea></label>
+${m?`<div class=g2><label>Option labels<select data-f=en><option value=0>বাংলা (ক খ গ ঘ)</option><option value=1${q.en?' selected':''}>English (A B C D)</option></select></label><label>Correct answer (optional, for answer key)<select data-f=ans><option value="">None</option>${[0,1,2,3,4].slice(0,n).map(j=>`<option value=${j}${q.ans!==''&&q.ans==j?' selected':''}>${lb[j]}</option>`).join('')}</select></label></div><label><input type=checkbox data-f=five style="width:auto"${q.five?' checked':''}> Add fifth option</label><div class=g2>${[0,1,2,3,4].slice(0,n).map(j=>`<label>${lb[j]}<input data-f=o${j} value="${E(q.o[j])}"></label>`).join('')}</div>`:''}
+${c?q.s.map((x,j)=>`<div class=card><b>${L[j]}</b><label>Sub-question<textarea data-f=s${j} rows=2>${E(x.t)}</textarea></label><div class=g2><label>Marks (optional)<input type=number data-f=m${j} value="${E(x.m)}"></label><label>Classification (optional)<select data-f=k${j}>${['','জ্ঞানমূলক','অনুধাবন','প্রয়োগ','উচ্চতর দক্ষতা'].map(k=>`<option${k==x.k?' selected':''}>${k}</option>`).join('')}</select></label></div></div>`).join(''):''}`};
+const mount=(r,q)=>{r._q=q;r.innerHTML=QE(q)};
+const RQ=(r,o)=>{const v=(k,d)=>{const e=r.querySelector(`[data-f=${k}]`);return e?(e.type=='checkbox'?e.checked:e.value):d};
+return{id:o.id,at:o.at,sub:v('sub',o.sub).trim(),cls:v('cls',o.cls).trim(),ch:v('ch',o.ch).trim(),type:v('type',o.type),text:v('text',o.text),stem:v('stem',o.stem),en:v('en',o.en?'1':'0')=='1',five:v('five',o.five),ans:v('ans',o.ans),o:o.o.map((x,j)=>v('o'+j,x)),s:o.s.map((x,j)=>({t:v('s'+j,x.t),m:v('m'+j,x.m),k:v('k'+j,x.k)}))}};
+const qt=q=>(q.stem?q.stem+' ':'')+q.text+(q.type=='MCQ'?' '+q.o.slice(0,q.five?5:4).filter(Boolean).join(' / '):'')+(q.type=='CQ'?' '+q.s.map(x=>x.t).filter(Boolean).join(' / '):'');
+const tk=q=>new Set(qt(q).toLowerCase().split(/[\s,.;:()\[\]?!।]+/).filter(Boolean)),sim2=(a,b)=>{const x=tk(a),y=tk(b),i=[...x].filter(w=>y.has(w)).length;return i/((x.size+y.size-i)||1)};
+const dup=(a,b)=>new Promise(r=>{const m=$('#md'),v=q=>`<div class=card><span class=bd>${q.type}</span> <span class=bd>Ch ${E(q.ch)}</span><p>${ET(qt(q))}</p></div>`;
+m.innerHTML=`<div class=mb2><b>Similar question found</b><div class=g2><div><div class=mu>Existing in bank</div>${v(a)}</div><div><div class=mu>New</div>${v(b)}</div></div><div class=row><button data-dr=both>Keep both</button><button data-dr=replace>Replace existing</button><button class=d data-dr=skip>Skip new</button></div></div>`;
+m.classList.add('on');m.onclick=e=>{const d=e.target.dataset.dr;if(d){m.classList.remove('on');r(d)}}});
+async function saveQs(list){let n=0,s=0;for(const q of list){if(!q.text.trim()&&!q.stem.trim())continue;const d=D.q.find(x=>x.id!==q.id&&sim2(x,q)>=.7);let a='both';if(d)a=await dup(d,q);
+if(a=='skip'){s++;continue}if(a=='replace')D.q=D.q.filter(x=>x.id!==d.id);const i=D.q.findIndex(x=>x.id===q.id);i<0?D.q.push(q):D.q[i]=q;n++}sv();return[n,s]}
+function parse(t,r){const out=[],nr=/^(?:Q\.?\s*)?(?:\(([0-9০-৯]+)\)|([0-9০-৯]+)\s*[.।):])\s*(.*)$/i,or=/^\(?([কখগঘঙ]|[A-Ea-e])\s*[).।]\s*(.*)$/,sr=/^(উদ্দীপক|stem|passage)\s*[:：-]?\s*(.*)$/i;let c=null,md='',m;
+for(let ln of t.split(/\r?\n/)){ln=ln.trim();if(!ln)continue;
+if(m=ln.match(nr)){c={...nq(),text:m[3],oo:[]};out.push(c);md='t'}else{if(!c){c={...nq(),oo:[]};out.push(c)}
+if(+r.stem&&(m=ln.match(sr))){c.stem=m[2];md='s'}else if(m=ln.match(or)){c.oo.push(m[2]);if(c.oo.length==1)c.en=/[A-Ea-e]/.test(m[1]);md='o'}
+else if(md=='o')c.oo[c.oo.length-1]+=' '+ln;else if(md=='s')c.stem+=(c.stem?' ':'')+ln;else c.text+=(c.text?' ':'')+ln}}
+out.forEach(c=>{const n=c.oo.length,av=n?c.oo.join('').length/n:0;c.type=c.stem||(n&&av>50)?'CQ':n>=2?'MCQ':r.deft;
+if(c.type=='MCQ'){c.five=n>4;c.o=c.oo.slice(0,5).concat(['','','','','']).slice(0,5)}if(c.type=='CQ')c.s=[0,1,2,3].map(j=>({t:c.oo[j]||'',m:'',k:''}));
+c.sub=r.sub;c.cls=r.cls;c.ch=r.ch;delete c.oo});return out}
+const syncRv=()=>$$('.rv').forEach(c=>{const r=c.querySelector('.rb');Rv[+c.dataset.i]=RQ(r,r._q)});
+const WH=s=>s.pg=='A4'?[210,297]:s.pg=='Letter'?[216,279]:s.pg=='Legal'?[216,356]:[s.cw||210,s.chh||297];
+const stot=(sc,ids)=>sc.items.reduce((b,i)=>b+(ids.has(i.q)?(+(i.m??sc.marks)||0):0),0);
+const tot=p=>{const ids=new Set(D.q.map(q=>q.id));return p.sec.reduce((a,sc)=>a+stot(sc,ids),0)};
+function PH(p){p=lp(p);const s=p.st,w=WH(s),mk=(x,sc)=>s.mk=='hide'||x===''||x==null?'':`<span style="${s.mk=='margin'?`position:absolute;right:-${Math.max(s.mr-2,4)}mm`:'float:right'}">[${sc.num=='bn'||sc.num=='bl'?bn(x):x}]</span>`;
+const Q=(q,n,m,sc)=>{let b=`<b>${n}.</b> `;if(q.type=='MCQ'){const lb=q.en?'ABCDE':L;b+=`${ET(q.text)}${mk(m,sc)}<div class=op style="grid-template-columns:repeat(${+s.opt||2},1fr);font-size:${s.ofs}pt">${q.o.slice(0,q.five?5:4).map((o,j)=>o.trim()?`<span>${lb[j]}) ${ET(o)}</span>`:'').join('')}</div>`}
+else if(q.type=='CQ')b+=`${ET(q.text)}${q.s.some(x=>x.m!=='')?'':mk(m,sc)}<div class=stem><b>উদ্দীপক:</b> ${ET(q.stem)}</div>`+q.s.map((x,j)=>x.t.trim()?`<div class=sq>${L[j]}) ${ET(x.t)}${mk(x.m,sc)}</div>`:'').join('');
+else b+=ET(q.text)+mk(m,sc);return`<div class=q${s.keep?' style="break-inside:avoid"':''}>${b}</div>`};
+let h=`<div class=pg data-w="${w[0]}" style="font-family:${s.ff},'Noto Sans Bengali',sans-serif;font-size:${s.fs}pt;line-height:${s.ls};text-align:${s.al};--ps:${s.ps}px;width:${w[0]}mm;min-height:${w[1]}mm;padding:${s.mt}mm ${s.mr}mm ${s.mb}mm ${s.ml}mm;${s.tint?'background:#F8F9FB':''}">`;
+if(s.wm)h+=`<div class=wm>${E(s.wm)}</div>`;
+h+=`<div style="text-align:center;${s.hb?'border-bottom:1.5px solid #000;':''}padding-bottom:6px;margin-bottom:8px">${s.logo?'<div class=logo>Logo</div>':''}<div style="font-size:${s.hfs}pt;font-weight:700">${E(p.inst)}</div><div style="font-weight:600">${E(p.exam)}</div></div><div class=mr><span>শ্রেণি: ${E(p.cls)}&nbsp; বিষয়: ${E(p.sub)}</span><span>${E(p.date)}</span></div><div class=mr><span>সময়: ${E(p.time)}</span><span>পূর্ণমান: ${p.full===''?'':bn(p.full)}</span></div>`;
+const li=p.ins.split('\n').filter(x=>x.trim());if(li.length)h+=`<div class=in><b>নির্দেশনা:</b><ol>${li.map(x=>`<li>${E(x)}</li>`).join('')}</ol></div>`;
+p.sec.forEach(sc=>{const hs={bold:'font-weight:700',underline:'font-weight:700;text-decoration:underline',box:'font-weight:700;border:1px solid #000;padding:2px 8px;display:inline-block'}[s.sh];
+h+=`<div class=sc><div style="${hs}">${E(sc.title)}</div>${sc.tot!==''?`<span style="float:right">(${bn(sc.tot)} নম্বর)</span>`:''}${sc.ins?`<div><i>${E(sc.ins)}</i></div>`:''}`;
+sc.items.map(i=>[D.q.find(q=>q.id==i.q),i]).filter(x=>x[0]).forEach(([q,i],n)=>h+=Q(q,(NUM[sc.num]||NUM.ar)(n),i.m??sc.marks,sc));h+='</div>'});return h+'</div>'}
+function pv(){const e=$('#pv');if(!e)return;e.innerHTML=PH(P);const g=e.firstChild;g.style.zoom=Math.max(.2,Math.min(1,($('#pvw').clientWidth-24)/(g.dataset.w*3.78)));
+const t=$('#tt');if(t){const ids=new Set(D.q.map(q=>q.id)),a=tot(P),f=P.full;t.innerHTML=`<b>Total marks: ${a}</b>${P.sec.map(s=>`<span class=bd>${E(s.title)}: ${stot(s,ids)}</span>`).join('')}${f!==''&&a!=f?`<span class=wr>Mismatch: full marks is ${f}, questions add up to ${a}.</span>`:''}`}}
+function printP(p){p=lp(p);const s=p.st,w=WH(s);$('#print').innerHTML=PH(p);$('#pgs').textContent=`@page{size:${w[0]}mm ${w[1]}mm;margin:${s.mt}mm ${s.mr}mm ${s.mb}mm ${s.ml}mm;${s.pn=='none'?'':`@bottom-${s.pn}{content:counter(page)}`}${s.ft?`@bottom-left{content:${JSON.stringify(s.ft)}}`:''}}`;
+setTimeout(()=>{try{window.print()}catch(e){toast('Printing is blocked in this view. Open the page in its own tab.')}},80)}
+const loadJS=src=>new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=()=>res();s.onerror=()=>rej(new Error('load failed'));document.head.appendChild(s)});
+async function pdfOut(p){
+p=lp(p||P);
+const name=(p.name||'question-paper').replace(/[\\/:*?"<>|]/g,'-').slice(0,60)+'.pdf';
+toast('Creating PDF…');
+try{
+if(!window.html2pdf)await loadJS('https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js');
+const s=p.st,w=WH(s),box=document.createElement('div');
+box.innerHTML=PH(p);const node=box.firstElementChild;
+Object.assign(node.style,{zoom:'1',margin:'0',padding:'0',minHeight:'0',width:(w[0]-s.ml-s.mr)+'mm'});
+await window.html2pdf().set({margin:[s.mt,s.ml,s.mb,s.mr],filename:name,image:{type:'jpeg',quality:.95},html2canvas:{scale:2,backgroundColor:'#ffffff',useCORS:true,logging:false},jsPDF:{unit:'mm',format:[w[0],w[1]],orientation:'portrait'},pagebreak:{mode:['css','legacy'],avoid:['.q']}}).from(node).save();
+toast('PDF downloaded.')
+}catch(e){toast('PDF engine unavailable — opening the print dialog, choose "Save as PDF".');printP(p)}}
+const PVB='<div id=pvw><div id=pv></div></div>',MKO=[['end','Brackets at end'],['margin','In right margin'],['hide','Hidden']];
+S.dash=()=>{const u=k=>new Set(D.q.map(q=>q[k]).filter(Boolean)).size,age=D.bkAt?Math.floor((Date.now()-D.bkAt)/864e5):null;
+return`<div class=g4>${[['Questions',D.q.length],['Subjects',u('sub')],['Classes',u('cls')],['Saved papers',D.p.length]].map(([a,b])=>`<div class=card><div class=mu>${a}</div><div class=big>${b}</div></div>`).join('')}</div>
+<div class=card><b>Quick actions</b><div class=row><button class=p data-a=go data-r="bank/single">Add question</button><button data-a=go data-r="bank/bulk">Bulk paste</button><button data-a=go data-r="paper/setup">Create paper</button><button data-a=go data-r="saved">Open recent</button><button data-a=go data-r="guide">User Guide</button></div></div>
+<div class=card><b>Recent papers</b>${D.p.length?D.p.slice(-5).reverse().map(p=>`<div class=row><span>${E(p.name)}</span><span class=bd>v${p.ver}</span><span class=mu>${E(p.cls)} ${E(p.sub)}</span><button data-a=open data-id=${p.id}>Open</button></div>`).join(''):'<p class=mu>No saved papers yet. Build one under Create Paper.</p>'}</div>
+<div class=card><b>Backup and storage</b><p>Last backup: ${age===null?'never':age+' day(s) ago'}. ${age===null||age>7?'<span class=wr>A backup is due.</span>':''}</p><p class=mu>Storage used: ${(JSON.stringify(D).length/1024).toFixed(1)} KB. Automatic snapshot taken ${D.snapAt?new Date(D.snapAt).toLocaleDateString():'never'}.</p><div class=row><button data-a=bksave>Back up to file</button><button data-a=go data-r="set/bak">Backup and restore</button></div></div>`};
+S['bank/all']=()=>{const o=k=>[...new Set(D.q.map(q=>q[k]).filter(Boolean))].sort().map(x=>[x]);
+return`<div class=card><div class=g5>${fl('$F.s','Contains')}${fl('$F.x','Does not contain')}${fl('$F.sub','Subject','s',[['','All'],...o('sub')])}${fl('$F.cls','Class','s',[['','All'],...o('cls')])}${fl('$F.ty','Type','s',[['','All'],'MCQ','CQ','Short'])}${fl('$F.so','Sort by','s',[['ch','Subject, class, chapter'],['at','Date added'],['ty','Type'],['az','Alphabetical']])}</div></div><div id=ql></div>`};
+function ql(){const f=X.F,tx=q=>qt(q).toLowerCase(),g=q=>q.sub+' / Class '+q.cls;
+const r=D.q.filter(q=>(!f.sub||q.sub==f.sub)&&(!f.cls||q.cls==f.cls)&&(!f.ty||q.type==f.ty)&&(!f.s||tx(q).includes(f.s.toLowerCase()))&&(!f.x||!tx(q).includes(f.x.toLowerCase())));
+const so={ch:(a,b)=>g(a).localeCompare(g(b))||a.ch.localeCompare(b.ch,0,{numeric:true})||a.type.localeCompare(b.type),at:(a,b)=>b.at-a.at,ty:(a,b)=>a.type.localeCompare(b.type),az:(a,b)=>tx(a).localeCompare(tx(b))};r.sort(so[f.so||'ch']);VIS=r.map(q=>q.id);let last='';
+$('#ql').innerHTML=`<div class="card row"><span>${r.length} of ${D.q.length} questions</span><button data-a=selall>Select all shown</button><input id=mvs placeholder="Move to subject" style="width:150px" list=subs><input id=mvc placeholder="Move to class" style="width:130px" list=clss><button data-a=bmv>Apply move</button><button class=d data-a=bdel>Delete selected</button></div><table>${r.map(q=>{let h='';if(f.so=='ch'&&g(q)!=last){last=g(q);h=`<tr><th colspan=4>${E(last)}</th></tr>`}return h+`<tr><td><input type=checkbox data-c=sel data-id=${q.id}${SEL[q.id]?' checked':''} style="width:auto"></td><td>Ch ${E(q.ch)}<br><span class=bd>${q.type}</span></td><td>${E(qt(q).slice(0,140))}</td><td><button data-a=eq data-id=${q.id}>Edit</button></td></tr>`}).join('')||'<tr><td>No questions match. Add some under Add Questions.</td></tr>'}</table>`}
+RF['bank/all']=AF['bank/all']=ql;
+S['bank/single']=()=>`<div class=card data-q id=qe></div><div class=row><button class=p data-a=saveq>${EQ?'Save changes':'Save to bank'}</button>${EQ?'<button data-a=cancelq>Cancel</button>':''}</div><p class=mu>Marks are assigned when you build a paper. Similar questions are flagged before saving.</p>`;
+AF['bank/single']=()=>mount($('#qe'),EQ?D.q.find(x=>x.id==EQ):(DQ=DQ||nq()));
+S['bank/bulk']=()=>tabs(['Paste Area','Parsing Rules','Review and Save'],'b')+(TB.b==0?`<div class=g3>${fl('$BP.sub','Default subject','t','subs')}${fl('$BP.cls','Default class','t','clss')}${fl('$BP.ch','Default chapter')}</div>${fl('$BP.txt','Paste questions. Numbered 1. / ১। / Q1. / (3), with ক) খ) গ) ঘ) lines under each.','ta')}<button class=p data-a=parse>Parse questions</button>`:TB.b==1?`${fl('$BP.stem','Treat a line starting with উদ্দীপক, Stem or Passage as a CQ stem','c')}${fl('$BP.deft','Type when no options or sub-questions are found','s',['Short','MCQ','CQ'])}<p class=mu>Lettered lines become MCQ options. A stem, or lettered lines longer than about 50 characters, make the question a CQ. Nothing is saved until you confirm.</p>`:Rv.length?Rv.map((q,i)=>`<div class="card rv" data-q data-i=${i}><div class=row><b>Parsed question ${i+1}</b><button class=d data-a=rvrm data-i=${i}>Remove</button></div><div class=rb></div></div>`).join('')+'<button class=p data-a=saveall>Save all to bank</button>':'<p class=mu>Nothing parsed yet. Paste text on the first tab.</p>');
+AF['bank/bulk']=()=>{if(TB.b==2)$$('.rv').forEach(c=>{const r=c.querySelector('.rb');r.dataset.q='';c._q=Rv[+c.dataset.i];mount(r,c._q);c._r=r})};
+S['paper/setup']=()=>{const f=[()=>fl('name','Paper name')+fl('inst','Institution name','t','ins')+fl('exam','Exam name','t','exm')+`<div class=g2>${fl('cls','Class','t','clss')}${fl('sub','Subject','t','subs')}${fl('date','Exam date','d')}${fl('time','Time or duration')}${fl('full','Full marks','n')}${fl('pass','Pass marks','n')}</div>`+fl('ins','Instructions (one per line)','ta'),
+()=>fl('st.opt','MCQ option layout','s',[[2,'Two columns'],[4,'Four columns'],[1,'Stacked rows']])+fl('st.mk','Marks display','s',MKO)+fl('st.sh','Section heading style','s',[['bold','Bold'],['underline','Underline'],['box','Box']])+fl('st.hb','Header bottom border','c')+fl('st.logo','Logo placeholder','c')+fl('st.wm','Watermark text (optional)')+fl('st.ft','Footer text')+fl('st.pn','Page number position','s',[['center','Center'],['right','Right'],['none','None']])+fl('st.keep','Keep each question, its options and its stem together on one page','c')+fl('st.tint','Subtle paper tint','c'),
+()=>fl('st.ff','Font family','s',[["'Noto Serif Bengali'",'Noto Serif Bengali'],["'Noto Sans Bengali'",'Noto Sans Bengali'],["'Times New Roman'",'Times New Roman'],['Arial','Arial']])+`<div class=g2>${fl('st.hfs','Header size (pt)','n')}${fl('st.fs','Question size (pt)','n')}${fl('st.ofs','Option size (pt)','n')}${fl('st.ls','Line spacing','n')}${fl('st.ps','Paragraph spacing (px)','n')}${fl('st.al','Alignment','s',[['left','Left'],['center','Center'],['right','Right'],['justify','Justified']])}</div>`,
+()=>fl('st.pg','Page size','s',['A4','Letter','Legal','Custom'])+`<div class=g2>${fl('st.cw','Custom width (mm)','n')}${fl('st.chh','Custom height (mm)','n')}${fl('st.mt','Top margin (mm)','n')}${fl('st.mb','Bottom margin (mm)','n')}${fl('st.ml','Left margin (mm)','n')}${fl('st.mr','Right margin (mm)','n')}</div>`];
+return`<div class=sp><div>${tabs(['Header Info','Layout','Font and Spacing','Page Setup'],'s')}${f[TB.s]()}</div>${PVB}</div>`};
+S['paper/sec']=()=>`<div class=row><button class=p data-a=sadd>Add section</button><button data-a=saddstd>Add standard sections (MCQ, CQ, Short)</button><button data-a=sdefall>Reset all sections to defaults</button></div>`
++P.sec.map((s,i)=>`<div class=card><div class=g4>${fl(`sec.${i}.title`,'Title')}${fl(`sec.${i}.type`,'Question type','s',['MCQ','CQ','Short','Mixed'])}${fl(`sec.${i}.marks`,'Marks per question','n')}${fl(`sec.${i}.num`,'Numbering','s',[['ar','Arabic 1, 2, 3'],['bn','Bengali ১, ২, ৩'],['ro','Roman I, II, III'],['al','Alphabetic A, B, C'],['bl','Bengali ক, খ, গ']])}</div><div class=g2>${fl(`sec.${i}.ins`,'Section instruction, e.g. Answer any 5')}${fl(`sec.${i}.tot`,'Section total marks (optional)','n')}</div><div class=row><span class=mu>${s.items.length} questions</span><button data-a=sdef data-i=${i}>Defaults</button><button data-a=sup data-i=${i}>Move up</button><button data-a=sdn data-i=${i}>Move down</button><button data-a=sdup data-i=${i}>Duplicate</button><button class=d data-a=sdel data-i=${i}>Delete</button></div></div>`).join('')+PVB;
+const cand=sc=>{const e=(a,b)=>!a||!b||a.trim().toLowerCase()==b.trim().toLowerCase();return D.q.filter(q=>(sc.type=='Mixed'||q.type==sc.type)&&e(P.sub,q.sub)&&e(P.cls,q.cls))};
+S['paper/sel']=()=>{SI=Math.min(SI,P.sec.length-1);const sc=P.sec[SI];
+return`<div class=row><label style="margin:0">Section<select data-c=ssec>${P.sec.map((s,i)=>`<option value=${i}${i==SI?' selected':''}>${E(s.title)} (${s.type})</option>`).join('')}</select></label></div>`+tabs(['Manual Selection','Automatic Selection','Load from Previous Paper'],'n')+
+(TB.n==0?`${fl('$MS.s','Search the bank')}<div class=card id=ml style="max-height:260px;overflow:auto"></div><button class=p data-a=addsel>Add ticked questions to section</button>`:TB.n==1?`<div class=g4>${fl('$AU.ch','Chapters (comma separated, blank for all)')}${fl('$AU.n','Number of questions','n')}${fl('$AU.mx','Max per chapter (0 for no limit)','n')}${fl('$AU.o','Order','s',[['r','Random'],['q','Sequential']])}</div>${fl('$AU.av','Avoid questions used in saved papers','c')}<button data-a=apick>Preview selection</button><div class=card>${PN.length?PN.map(id=>`<div class=rw>${E(qt(D.q.find(q=>q.id==id)||nq()).slice(0,120))}</div>`).join('')+'<div class=row><button class=p data-a=aadd>Add these to section</button></div>':'<span class=mu>No preview yet.</span>'}</div>`:`<div class=card>${fl('$RP.id','Saved paper','s',[['','Choose...'],...D.p.map(p=>[p.id,`${p.name} v${p.ver}`])])}${fl('$RP.so','Copy structure only, without questions','c')}<button class=p data-a=rpcopy>Copy into current paper</button></div>`)+
+`<div class=card><b>Questions in ${E(sc.title)}</b>${sc.items.map((it,j)=>{const q=D.q.find(x=>x.id==it.q);return q?`<div class=rw><span>${j+1}.</span><span style="flex:1">${E(qt(q).slice(0,90))}</span><input type=number step=any data-c=im data-j=${j} value="${it.m??''}" placeholder="${sc.marks}" style="width:64px" title="Marks"><button data-a=iup data-j=${j}>Up</button><button data-a=idn data-j=${j}>Down</button><select data-c=imv data-j=${j} style="width:110px"><option value="">Move to</option>${P.sec.map((s,i)=>i==SI?'':`<option value=${i}>${E(s.title)}</option>`).join('')}</select><button class=d data-a=irm data-j=${j}>Remove</button></div>`:''}).join('')||'<p class=mu>Nothing selected yet.</p>'}</div>`};
+function mlist(){const e=$('#ml');if(!e)return;const sc=P.sec[SI],s=(X.MS.s||'').toLowerCase(),c=cand(sc).filter(q=>!s||qt(q).toLowerCase().includes(s));
+e.innerHTML=c.length?c.slice(0,200).map(q=>`<label class=rw><input type=checkbox data-pick=${q.id}${PK[q.id]?' checked':''}> <span class=bd>${q.type}</span><span class=bd>Ch ${E(q.ch)}</span><span>${E(qt(q).slice(0,110))}${sc.items.some(i=>i.q==q.id)?' <span class=wr>(already in section)</span>':''}</span></label>`).join(''):'<p class=mu>No matching questions. Check the subject, class and section type.</p>'}
+RF['paper/sel']=mlist;AF['paper/sel']=mlist;
+S['paper/out']=()=>`<div class=card><b>Layout tweaks</b><div class=g4>${fl('st.fs','Question size (pt)','n')}${fl('st.ls','Line spacing','n')}${fl('st.opt','Option layout','s',[[2,'Two columns'],[4,'Four columns'],[1,'Stacked rows']])}${fl('st.mk','Marks display','s',MKO)}</div><div class=row id=tt></div></div><div class=card><div class=row><button class=p data-a=pdf>Download PDF</button><button data-a=txt>Download TXT</button><button data-a=print>Print</button><input data-g=VN placeholder="Version name, e.g. Annual 2026 revised" style="width:280px" value="${E(X.VN)}"><button data-a=savep>Save as new version</button><button data-a=go data-r="paper/lib">Save as template</button></div></div>`+PVB;
+S['paper/lib']=()=>`<div class=card><b>Current draft</b><div class=row><span>${E(P.name)}</span><button data-a=go data-r="paper/setup">Resume draft</button><button data-a=newp>Start a blank paper</button></div></div><div class=card><b>Paper file</b><p class=mu>Export the draft together with the questions it uses as one JSON file, so it can move between devices or browsers.</p><div class=row><button data-a=pexp>Export paper to file</button><button data-a=pimp>Import paper from file</button></div></div><div class=card><b>Paper templates</b>${D.t.map(t=>`<div class=row><span>${E(t.name)}</span><button data-a=tpluse data-id=${t.id}>Use</button><button class=d data-a=tpldel data-id=${t.id}>Delete</button></div>`).join('')||'<p class=mu>No templates yet.</p>'}<div class=row><input data-g=TN placeholder="Template name" style="width:240px" value="${E(X.TN)}"><button class=p data-a=tplsave>Save current layout and sections as template</button></div></div>`;
+S.saved=()=>`<div class=card><div class=g3>${fl('$SV.s','Search by name, class or subject')}${fl('$SV.g','Group by','s',[['at','Date'],['cls','Class'],['sub','Subject']])}</div></div><div id=sl></div>`;
+function svl(){const s=(X.SV.s||'').toLowerCase(),g=X.SV.g,r=D.p.filter(p=>!s||(p.name+p.cls+p.sub+(p.vname||'')).toLowerCase().includes(s)).sort((a,b)=>b.at-a.at),k=p=>g=='at'?new Date(p.at).toLocaleDateString():p[g]||'None',gr={};r.forEach(p=>(gr[k(p)]=gr[k(p)]||[]).push(p));
+$('#sl').innerHTML=Object.entries(gr).map(([h,a])=>`<div class=card><b>${E(h)}</b>${a.map(p=>`<div class=row><input data-c=pn data-id=${p.id} value="${E(p.name)}" style="width:200px"><span class=bd>v${p.ver}</span><input data-c=pv data-id=${p.id} value="${E(p.vname||'')}" placeholder="Version name" style="width:170px"><span class=mu>${E(p.cls)} ${E(p.sub)}</span><button data-a=open data-id=${p.id}>Open and edit</button><button data-a=pprint data-id=${p.id}>Print</button><button data-a=pdfid data-id=${p.id}>PDF</button><button data-a=txpid data-id=${p.id}>TXT</button><button data-a=pexpid data-id=${p.id}>Export file</button><button data-a=pdup data-id=${p.id}>Duplicate</button><button class=d data-a=pdel data-id=${p.id}>Delete</button></div>`).join('')}</div>`).join('')||'<p class=mu>No saved papers match.</p>'}
+RF.saved=AF.saved=svl;
+S['set/app']=()=>`<div class=card>${fl('#insts','Saved institutions (one per line)','tl')}${fl('#exams','Saved exam names (one per line)','tl')}</div><div class=card><p class=mu>Only light mode is available in this app.</p></div>`;
+S['set/bak']=()=>`<div class=card><b>Backup file</b>${FSA?'<p class=mu>Pick a file once, and this browser will keep writing your backups straight into it. The link is remembered on this device.</p>':'<p class=mu>This browser does not support the File System Access API, so backups are downloaded and restored through a normal file picker.</p>'}<div class=row><button class=p data-a=bksave>Save backup to file</button><button data-a=bkopen>Open and restore from file</button>${FSA?'<button data-a=bkunlink>Forget linked file</button>':''}</div><p class=mu id=bkfile></p></div>
+<div class=card><b>Export as text</b><p class=mu>Copy the text below into a file and keep it safe.</p><button data-a=bkx>Prepare and copy export</button><textarea id=ex rows=5 readonly></textarea></div>
+<div class=card><b>Restore from pasted text</b><p class=mu>Your current data is saved as a snapshot before anything is replaced.</p>${fl('$RJ','Paste backup text','ta')}<div class=row><button class=d data-a=rst>Restore from pasted text</button>${D.snap?'<button data-a=snaprest>Restore automatic snapshot</button>':''}</div></div>
+<div class=card><b>About</b><p class=mu>Smart Question Paper Maker. Data stays in this browser on this device unless you save a backup file.</p></div>`;
+AF['set/bak']=async()=>{const e=$('#bkfile');if(!e)return;const h=await idb.get('bak');e.textContent=h?'Linked file: '+h.name+' — Save backup writes straight into it.':'No file linked yet. The first save asks where to put it.'};
+/* User Guide */
+S.guide=()=>{const G=[
+['Overview','A single-file, offline-first question-paper builder. All data lives in this browser\'s <code>localStorage</code> on this device. No server, no account.'],
+['First launch','You land on the <b>Dashboard</b>. The sidebar is the entire app. On first launch a snapshot of your data is taken automatically. If you ever lose something, use <em>Settings → Backup and Restore → Restore automatic snapshot</em>.'],
+['Building the Question Bank','<b>Single Entry</b> — <em>Question Bank → Add Questions → Single Entry</em>. Fill subject, class, chapter, type (MCQ / CQ / Short), question text, then type-specific fields. Marks are <b>not</b> set here — they belong to the paper.<br><br><b>Bulk Paste</b> — three tabs. Paste Area accepts numbered lines (<code>1.</code>, <code>১।</code>, <code>Q1.</code>, <code>(3)</code>), option lines (<code>ক)</code>, <code>A)</code>) and stem lines starting with <code>উদ্দীপক</code>, <code>Stem</code> or <code>Passage</code>. Review every parsed question in Tab 3 before saving.'],
+['Browsing the bank','<em>Question Bank → All Questions</em>. Filter by Contains / Does not contain / Subject / Class / Type. Sort by Subject→Class→Chapter, Date, Type or Alphabetical. Tick rows to bulk move to another subject or class, or to delete.'],
+['Building a paper','Four wizard steps: <b>Paper Setup → Sections Manager → Question Selection → Generate and Preview</b>.<br><br><b>Paper Setup</b> — Header Info, Layout, Font and Spacing, Page Setup. Live preview updates as you type.<br><br><b>Sections Manager</b> — title, type (MCQ/CQ/Short/Mixed), marks per question, numbering (Arabic / Bengali / Roman / Alphabetic / ক-খ-গ), instruction, optional total.<br><br><b>Question Selection</b> — Manual, Automatic or Load from Previous Paper.<br><br><b>Generate and Preview</b> — Live preview, layout tweaks, total-marks check, Print / PDF / TXT, Save as version, Save as template.'],
+['Saved Papers','<em>Saved Papers</em> from the sidebar. Search, group by date/class/subject, rename, open, print, export TXT, duplicate or delete. Each save increments the version.'],
+['Printing','Page numbers work in Chrome/Edge. Watermark repeats on every page. Enable "Background graphics" in the print dialog to keep tints and borders.'],
+['Templates','<em>Create Paper → Drafts and Templates</em> saves layout and section structure (no questions) for reuse.'],
+['Settings','<b>Appearance and Defaults</b> — saved institutions and exam names (autocomplete).<br><b>Backup and Restore</b> — export JSON or text, restore from paste, or revert to an automatic snapshot. Chrome/Edge can link a backup file once and overwrite it in place.'],
+['AI Assistant','Settings → AI Assistant. Choose a provider (OpenAI, Groq, OpenRouter, DeepSeek, Mistral, Together, Anthropic, Google Gemini, Ollama, or a custom OpenAI-compatible endpoint). Rules-only mode works fully offline with no key.'],
+['Keyboard and navigation','<b>/</b> or <b>Ctrl+K</b> opens the assistant. <b>Esc</b> closes it. <b>Back</b> (top-left) returns through history.'],
+['Best-practice workflow','1. Add your institutions and exam names once.<br>2. Populate the bank in bulk, review, save.<br>3. Save the Paper Setup as a template.<br>4. Build each subject\'s paper from the template.<br>5. Preview, tweak marks, watch the total.<br>6. Save as a version with a meaningful name.<br>7. Export a backup weekly.'],
+['Troubleshooting','<table><tr><th>Symptom</th><th>Fix</th></tr><tr><td>Changes vanish after refresh</td><td>Check storage is not full; check console for quota errors.</td></tr><tr><td>Preview does not update</td><td>Click outside the field; some mobile keyboards delay input events.</td></tr><tr><td>Options layout wrong</td><td>Set option layout in Paper Setup → Layout or on the Generate screen.</td></tr><tr><td>Print has no page numbers</td><td>Use Chrome/Edge; Firefox ignores <code>@bottom-center</code>.</td></tr><tr><td>Backup paste says not valid</td><td>Check for truncation; the JSON must contain a <code>q</code> array.</td></tr></table>'],
+['Limits and caveats','• No cloud sync; each browser has its own copy.<br>• No multi-user support.<br>• Similarity detection uses word overlap — false positives on short questions.<br>• The parser is line-based; irregular pasted text may need manual fixes.<br>• Bengali numerals are display-only; storage uses Arabic digits.']];
+return `<div class=card><b>Smart Question Paper Maker — User Guide</b><p class=mu>Complete guide to every screen. Open any section for details.</p></div>`+G.map(([t,h])=>`<details open class=card><summary style="cursor:pointer;font-weight:600;padding:2px 0">${E(t)}</summary><div style="padding-top:8px">${h}</div></details>`).join('');};
+/* ================= Zillur Rahman — multi-provider assistant ================= */
+const BN_D='০১২৩৪৫৬৭৮৯';
+const FOLD=[[/[০-৯]/g,d=>BN_D.indexOf(d)],[/\u09DF/g,'\u09AF\u09BC'],[/\u09DC/g,'\u09A1\u09BC'],[/\u09DD/g,'\u09A2\u09BC'],[/ং/g,'ঙ'],[/ঁ/g,''],[/ী/g,'ি'],[/ূ/g,'ু'],[/ৈ/g,'ই'],[/ৌ/g,'উ'],[/[।॥!?,;:"'“”‘’()\[\]{}…—–]/g,' '],[/\s+/g,' ']];
+const norm=s=>{s=String(s??'').toLowerCase().normalize('NFC');for(const[r,t]of FOLD)s=s.replace(r,t);return s.trim()};
+const SUF=['গুলো','গুলি','গুলোর','গুলির','টার','টির','টা','টি','টুকু','দের','কে','ের','য়ে','তে','েতে','থেকে','দিয়ে','দ্বারা','জন্য'];
+const stem=t=>{if(t.length<5)return t;for(const s of SUF)if(t.length-s.length>=3&&t.endsWith(s))return t.slice(0,-s.length);return t};
+const STOP=new Set(('কি কী কিভাবে কীভাবে কোথায় কোথা থেকে এর একটা একটি আমি আমার টা টি আর এবং বা না হয় হবে করব করবো করতে করা করলে দাও দেবেন পারেন পারি please the a an is are to for of in on i me my we you it this that can could would should how what where when which').split(' '));
+const toks=s=>norm(s).split(' ').filter(t=>t&&!STOP.has(t)).map(stem);
+const bi=s=>{const g=new Set();for(let i=0;i<s.length-1;i++)g.add(s.slice(i,i+2));return g};
+const dice=(a,b)=>{const A=bi(a),B=bi(b);if(!A.size||!B.size)return a===b?1:0;let i=0;for(const x of A)if(B.has(x))i++;return 2*i/(A.size+B.size)};
+const lev=(a,b)=>{if(a===b)return 0;if(Math.abs(a.length-b.length)>2)return 9;let p=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[b.length]};
+const tokSim=(a,b)=>{if(a===b)return 1;const m=Math.min(a.length,b.length);if(m>=4&&(a.includes(b)||b.includes(a)))return .9;const l=m>=4?lev(a,b):9;return Math.max(m>=3?dice(a,b):0,l<=1?1:(m>=6&&l===2)?.5:0)};
+const sim=(qt,kt)=>{if(!kt.length)return 0;let s=0;for(const k of kt){let b=0;for(const q of qt)b=Math.max(b,tokSim(q,k));s+=b}return s/kt.length};
+const THRESH=.55,ZRULES=[
+{k:['thanks','thank you','ধন্যবাদ','শুকরিয়া','ok','okay','got it','ঠিক আছে','আচ্ছা','bye','বিদায়'],a:'You\'re welcome. Ask anytime.',w:3},
+{k:['হ্যালো','হাই','আসসালামু','সালাম','assalam','salam','hello','hi','hey','good morning','শুভ সকাল'],a:'Assalam\'ulaikum! I\'m <b>Zillur Rahman</b> — this app\'s assistant. Ask me where anything is: layout, marks, sections, PDF, backup.',w:3},
+{k:['pdf','ডাউনলোড','download','save as','সেভ as','সেভ as pdf'],neg:['without print','প্রিন্ট ছাড়া'],a:'<b>PDF download:</b> Create Paper → Generate and Preview → <b>Download PDF</b>. Or press Print and choose "Save as PDF".',r:'paper/out',lb:'Open Generate and Preview'},
+{k:['txt','text','এডিটেবল','editable','প্লেইন টেক্সট','plain text','word file','ওয়ার্ড'],a:'<b>Editable TXT download:</b> Create Paper → Generate and Preview → <b>Download TXT</b>. The file is plain UTF-8 text you can edit in any word processor or text editor.',r:'paper/out',lb:'Open Generate and Preview'},
+{k:['layout','লেআউট','বিন্যাস','লেঅউট','সাজানো','সাজাবো'],a:'<b>Layout changes:</b> Create Paper → Paper Setup → <b>Layout</b> tab. That covers MCQ option columns, marks display, section heading style, logo, watermark, footer and page number.',r:'paper/setup',f:'s',i:1,lb:'Paper Setup → Layout'},
+{k:['font','ফন্ট','সাইজ','size','আকার','স্পেসিং','spacing','line height','alignment','অ্যালাইন','লাইন স্পেসিং'],a:'<b>Font and spacing:</b> Create Paper → Paper Setup → <b>Font and Spacing</b> tab.',r:'paper/setup',f:'s',i:2,lb:'Paper Setup → Font and Spacing'},
+{k:['margin','মার্জিন','page size','পেজ সাইজ','কাগজ','a4','legal','letter','কাস্টম'],a:'<b>Margins and page size:</b> Create Paper → Paper Setup → <b>Page Setup</b> tab.',r:'paper/setup',f:'s',i:3,lb:'Paper Setup → Page Setup'},
+{k:['institute','school','college','স্কুল','কলেজ','প্রতিষ্ঠান','পরীক্ষার নাম','exam name','শ্রেণি','বিষয়','পূর্ণমান','full marks','নির্দেশনা','instruction','তারিখ','সময়','header'],a:'<b>Header info:</b> Create Paper → Paper Setup → <b>Header Info</b> tab.',r:'paper/setup',f:'s',i:0,lb:'Paper Setup → Header Info'},
+{k:['জলছাপ','watermark','ওয়াটারমার্ক','logo','লোগো','footer','ফুটার','page number','পেজ নম্বর','marks display','নম্বর দেখ'],a:'All of those live under <b>Paper Setup → Layout</b>.',r:'paper/setup',f:'s',i:1,lb:'Paper Setup → Layout'},
+{k:['bulk','paste','পেস্ট','একসাথে','বাল্ক','অনেক প্রশ্ন'],a:'<b>Bulk paste:</b> Question Bank → Add Questions → <b>Bulk Paste</b>. Start each with 1. / ১। / Q1.; put ক) খ) গ) on their own lines.',r:'bank/bulk',lb:'Open Bulk Paste'},
+{k:['add question','নতুন প্রশ্ন','প্রশ্ন যোগ','প্রশ্ন তৈর','single','একক','প্রশ্ন লেখা'],a:'<b>Add one question:</b> Question Bank → Add Questions → <b>Single Entry</b>.',r:'bank/single',lb:'Open Single Entry'},
+{k:['section','সেকশন','বিভাগ','নম্বর বণ্টন','প্রতি প্রশ্নে নম্বর','numbering','নম্বরিং','marks per'],a:'<b>Sections:</b> Create Paper → <b>Sections Manager</b>. Press <b>Defaults</b> on any section to reset it.',r:'paper/sec',lb:'Open Sections Manager'},
+{k:['automatic','auto','random','র্যান্ডম','অটো','স্বয়ংক্রিয়','নিজে থেকে'],a:'<b>Automatic selection:</b> Create Paper → Question Selection → <b>Automatic Selection</b> tab.',r:'paper/sel',f:'n',i:1,lb:'Open Automatic Selection'},
+{k:['select','বাছাই','নির্বাচন','প্রশ্ন নির্বাচন','manual','হাতে হাতে','selection'],a:'<b>Manual selection:</b> Create Paper → Question Selection → <b>Manual Selection</b> tab.',r:'paper/sel',f:'n',i:0,lb:'Open Question Selection'},
+{k:['backup','ব্যাকআপ','restore','রিস্টোর','import','ইমপোর্ট','export','এক্সপোর্ট'],a:'<b>Backup and restore:</b> Settings → <b>Backup and Restore</b>.',r:'set/bak',lb:'Open Backup and Restore'},
+{k:['template','টেম্পলেট','draft','খসড়া','drafts'],a:'<b>Drafts and templates:</b> Create Paper → <b>Drafts and Templates</b>.',r:'paper/lib',lb:'Open Drafts and Templates'},
+{k:['saved','সংরক্ষিত','সেভ করা','আগের পেপার','পুরনো পেপার'],a:'<b>Saved papers:</b> use the left menu → <b>Saved Papers</b>.',r:'saved',lb:'Open Saved Papers'},
+{k:['search','খোঁজ','খুঁজ','filter','ফিল্টার','contains'],a:'<b>Search questions:</b> Question Bank → <b>All Questions</b>, then use Contains / Subject / Class / Type.',r:'bank/all',lb:'Open All Questions'},
+{k:['delete','মুছে','ডিলিট','remove','বাদ দাও'],a:'<b>Delete questions:</b> Question Bank → All Questions → tick the boxes → <b>Delete selected</b>.',r:'bank/all',lb:'Open All Questions'},
+{k:['mcq','সৃজনশীল','cq','short','প্রশ্নের ধরন','question type','উদ্দীপক'],a:'Question type (MCQ / CQ / Short) is chosen when you add the question: Question Bank → Add Questions → <b>Single Entry</b>.',r:'bank/single',lb:'Open Single Entry'},
+{k:['total','মোট নম্বর','mismatch','মিলছে না'],a:'The total marks appear under Generate and Preview. If it doesn\'t match the full marks, a red warning appears.',r:'paper/out',lb:'Open Generate and Preview'},
+{k:['new paper','নতুন প্রশ্নপত্র','নতুন পেপার','নতুন খাতা'],a:'Press <b>New paper</b> in the toolbar to start a blank paper with a default institution and one section.',x:'newp',lb:'Start a new paper'},
+{k:['ai','assistant settings','api','provider','openai','gemini','groq','openrouter','ollama','api key'],a:'<b>AI Assistant settings:</b> Settings → AI Assistant. Configure a provider there, or leave it off to use rules-only offline mode.',r:'set/ai',lb:'Open AI Assistant settings'},
+{k:['log','unanswered','assistant log','what did i ask'],a:'<b>Assistant Log:</b> Settings → Assistant Log shows every query the assistant couldn\'t answer.',r:'set/log',lb:'Open Assistant Log'},
+{k:['guide','manual','documentation','user guide','how to use','সাহায্য book'],a:'<b>User Guide:</b> open the last item in the left sidebar — <b>User Guide</b>. It walks through every screen.',r:'guide',lb:'Open User Guide'},
+{k:['theme','থিম','dark','ডার্ক','mode','মোড','রাতের মোড'],a:'This app currently ships <b>light mode</b> only.'},
+{k:['help','সাহায্য','how to','কিভাবে','কীভাবে','কেমন করে','what can you do'],a:'Try: <i>how do I change layout?</i>, <i>PDF download</i>, <i>TXT download</i>, <i>add a question</i>, <i>set up sections</i>, <i>backup</i>, <i>AI settings</i>, <i>user guide</i>.'}
+];
+function scoreRule(qt,qn,r){let best=0;for(const k of r.k){const kn=norm(k),kt=toks(k);let s=kt.length>1?(kt.every(t=>qt.some(q=>tokSim(q,t)>.8))?1:sim(qt,kt)*.85):sim(qt,kt);if(kn.length>3&&qn.includes(kn))s=Math.max(s,.95);best=Math.max(best,s)}
+if(r.neg&&r.neg.some(n=>qn.includes(norm(n))))best-=1;return best+(r.w||0)*.01}
+function zmatch(q){const qn=norm(q),qt=toks(q);let best=null,bs=0;for(const r of ZRULES){const s=scoreRule(qt,qn,r);if(s>bs){bs=s;best=r}}return bs>=THRESH?{rule:best,score:bs}:null}
+function findFeature(q){const qt=toks(q);let best=null,bs=.6;(function walk(a,p){for(const x of a){const s=sim(qt,toks(x.t));if(s>bs){bs=s;best={path:[...p,x.t],id:x.id}}if(x.c)walk(x.c,[...p,x.t])}})(T,[]);return best}
+const ZCTX={lastRule:null,lastRoute:null,turns:[]};
+const ALLOWED=new Set(['go','tb','sdefall','saddstd','print','pdf','txt','bkx','pexp','bkopen','aitest','aiclear','aiforget','logRule','logClear']);
+const ROUTES=new Set([...PS,'dash','bank/all','bank/single','bank/bulk','saved','set/app','set/bak','set/ai','set/log','paper/lib','guide']);
+function zcaveats(){const out=[];try{const t=tot(P),f=P.full;if(f!==''&&+f!==t)out.push(`⚠ Full marks is ${f} but questions add up to ${t}.`);if(P.sec.length&&P.sec.every(s=>!s.items.length))out.push('ℹ No questions added to any section yet.');else if(P.sec.some(s=>!s.items.length))out.push(`ℹ Empty sections: ${P.sec.filter(s=>!s.items.length).map(s=>s.title).join(', ')}.`)}catch(e){}return out}
+const zmsgs=(extra=[])=>{const o=[];for(const m of ZCTX.turns.slice(-7).concat(extra)){if(!o.length&&m.role!=='user')continue;const l=o[o.length-1];if(l&&l.role===m.role)l.content+='\n'+m.content;else o.push({...m})}return o};
+const zjson=t=>{t=String(t);const a=t.indexOf('{'),b=t.lastIndexOf('}');return JSON.parse(a>=0?t.slice(a,b+1):t)};
+const AI={
+oaiCompat:(base)=>({base,async chat({system,messages,model,json,temperature=.2,maxTokens=600,signal,key}){const r=await fetch((base||AICFG.base||'').replace(/\/+$/,'')+'/chat/completions',{method:'POST',signal,headers:{'content-type':'application/json',authorization:'Bearer '+key},body:JSON.stringify({model,temperature,max_tokens:maxTokens,...(json?{response_format:{type:'json_object'}}:{}),messages:[{role:'system',content:system},...messages]})});if(!r.ok)throw new Error('HTTP '+r.status+': '+(await r.text()).slice(0,200));const d=await r.json();return{text:d.choices[0].message.content,usage:d.usage?{in:d.usage.prompt_tokens,out:d.usage.completion_tokens}:null}}}),
+anthropic:{base:'https://api.anthropic.com',async chat({system,messages,model,json,temperature=.2,maxTokens=600,signal,key}){const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',signal,headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model,max_tokens:maxTokens,temperature,system,messages:messages.map(m=>({role:m.role==='assistant'?'assistant':'user',content:m.content}))})});if(!r.ok)throw new Error('HTTP '+r.status+': '+(await r.text()).slice(0,200));const d=await r.json();return{text:d.content.map(c=>c.text||'').join(''),usage:d.usage?{in:d.usage.input_tokens,out:d.usage.output_tokens}:null}}},
+gemini:{base:'https://generativelanguage.googleapis.com/v1beta',async chat({system,messages,model,json,temperature=.2,maxTokens=600,signal,key}){const r=await fetch(`${this.base}/models/${model}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',signal,headers:{'content-type':'application/json'},body:JSON.stringify({systemInstruction:{parts:[{text:system}]},contents:messages.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),generationConfig:{temperature,maxOutputTokens:maxTokens,...(json?{responseMimeType:'application/json'}:{})}})});if(!r.ok)throw new Error('HTTP '+r.status+': '+(await r.text()).slice(0,200));const d=await r.json();const c=d.candidates?.[0];return{text:c?.content?.parts?.map(p=>p.text||'').join('')||'',usage:d.usageMetadata?{in:d.usageMetadata.promptTokenCount,out:d.usageMetadata.candidatesTokenCount}:null}}},
+ollama:{base:'http://localhost:11434',async chat({system,messages,model,json,temperature=.2,signal}){const r=await fetch('http://localhost:11434/api/chat',{method:'POST',signal,headers:{'content-type':'application/json'},body:JSON.stringify({model,stream:false,temperature,...(json?{format:'json'}:{}),options:{num_predict:600},messages:[{role:'system',content:system},...messages]})});if(!r.ok)throw new Error('HTTP '+r.status);const d=await r.json();return{text:d.message?.content||'',usage:null}}}
+};
+const PROVIDERS={
+openai:{...AI.oaiCompat('https://api.openai.com/v1'),id:'openai',label:'OpenAI',models:['gpt-4o-mini','gpt-4o','gpt-4.1-mini'],needsKey:1},
+groq:{...AI.oaiCompat('https://api.groq.com/openai/v1'),id:'groq',label:'Groq (fast, free tier)',models:['llama-3.3-70b-versatile','llama-3.1-8b-instant','qwen-2.5-32b'],needsKey:1},
+openrouter:{...AI.oaiCompat('https://openrouter.ai/api/v1'),id:'openrouter',label:'OpenRouter',models:['google/gemini-2.0-flash-exp:free','meta-llama/llama-3.3-70b-instruct','anthropic/claude-3.5-haiku'],needsKey:1},
+deepseek:{...AI.oaiCompat('https://api.deepseek.com/v1'),id:'deepseek',label:'DeepSeek',models:['deepseek-chat'],needsKey:1},
+mistral:{...AI.oaiCompat('https://api.mistral.ai/v1'),id:'mistral',label:'Mistral',models:['mistral-small-latest','open-mistral-nemo'],needsKey:1},
+together:{...AI.oaiCompat('https://api.together.xyz/v1'),id:'together',label:'Together',models:['meta-llama/Llama-3.3-70B-Instruct-Turbo'],needsKey:1},
+anthropic:{...AI.anthropic,id:'anthropic',label:'Anthropic',models:['claude-haiku-5-5','claude-sonnet-5-5'],needsKey:1},
+gemini:{...AI.gemini,id:'gemini',label:'Google Gemini',models:['gemini-2.0-flash','gemini-1.5-flash'],needsKey:1},
+ollama:{...AI.ollama,id:'ollama',label:'Ollama (local)',models:['qwen2.5:3b','llama3.2:3b','gemma2:2b'],needsKey:0},
+custom:{...AI.oaiCompat(''),id:'custom',label:'Custom / self-hosted',models:['(set in provider)'],needsKey:1}
+};
+const AICFG=(()=>{try{const s=JSON.parse(localStorage.getItem('sqpm.ai')||'{}');return Object.assign({enabled:false,provider:'',model:'',base:'',session:false,key:''},s,{key:s.session?(sessionStorage.getItem('sqpm.aik')||''):(localStorage.getItem('sqpm.aik')||'')})}catch(e){return{enabled:false,provider:'',model:'',base:'',session:false,key:''}}})();
+const svAI=()=>{try{localStorage.setItem('sqpm.ai',JSON.stringify({enabled:AICFG.enabled,provider:AICFG.provider,model:AICFG.model,base:AICFG.base,session:AICFG.session}));if(AICFG.session){sessionStorage.setItem('sqpm.aik',AICFG.key||'');localStorage.removeItem('sqpm.aik')}else{localStorage.setItem('sqpm.aik',AICFG.key||'');sessionStorage.removeItem('sqpm.aik')}}catch(e){}};
+const AIKEY=()=>{try{return AICFG.session?(sessionStorage.getItem('sqpm.aik')||''):(localStorage.getItem('sqpm.aik')||'')}catch(e){return AICFG.key||''}};
+const AICACHE=new Map();
+const djb2=s=>{let h=5381;for(let i=0;i<s.length;i++)h=(h*33^s.charCodeAt(i))>>>0;return h};
+const APP_MAP=(()=>{const out=[];(function w(a,p){for(const x of a){const q=p?p+' → '+x.t:x.t;out.push('• '+q+(x.id?' ['+x.id+']':''));if(x.c)w(x.c,q)}})(T,'');return out.join('\n')})();
+const ZSYS_BASE=`You are "Zillur Rahman", the assistant inside a Bangla-medium question paper maker app.
+Answer in English only, 3 sentences maximum. Never invent a feature that is not in APP_MAP; if it isn't there, say "this app doesn't have that".
+Greeting rule: whenever the user greets you, always begin your reply with "Assalam'ulaikum" (capitalised, with the apostrophe). Never write "Wa laikum assalam" as your greeting.
+Return JSON only, no markdown.
+
+APP_MAP:
+${APP_MAP}
+
+Route ids are the values in [brackets] in APP_MAP.
+
+Schema:
+{"answer":"string","action":{"type":"go","route":"string","group":"s|n","tab":0,"label":"string"}|null,"chips":["string"]}
+Use action.type="go" with route from the routes list above to send the user there. Omit action if no navigation is needed.`;
+const ZSYS_TAIL={openai:'',groq:'\n\nCRITICAL: raw JSON only. No backticks, no preamble.',gemini:'\n\nRespond as compact JSON.',anthropic:'\n\nReturn only the JSON object described above.',ollama:'\n\nJSON only: {"answer":"...","action":null,"chips":[]}',openrouter:'\n\nOutput valid JSON. No markdown.'};
+const ZSYS_FOR=p=>ZSYS_BASE+(ZSYS_TAIL[p]||'');
+async function aiAsk(question){
+if(!AICFG.enabled||!AICFG.provider||!PROVIDERS[AICFG.provider])return null;
+const key=djb2(question+'|'+AICFG.provider+'|'+AICFG.model);
+const hit=AICACHE.get(key);if(hit&&Date.now()-hit.t<3e5)return hit.res;
+const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),12000);
+try{
+const p=PROVIDERS[AICFG.provider];
+const call=opts=>p.chat({system:ZSYS_FOR(AICFG.provider),model:AICFG.model,json:true,temperature:.2,maxTokens:600,signal:ctl.signal,key:p.needsKey?AIKEY():undefined,messages:zmsgs(opts.extra)});
+const out=await call({});
+let j=null;
+try{j=zjson(out.text)}catch(e){try{const fix=await call({extra:[{role:'user',content:'Return ONLY valid JSON matching the schema. Previous output was:\n'+out.text}]});j=zjson(fix.text)}catch(e2){j=null}}
+if(!j)return null;
+const res={answer:j.answer||'',action:j.action||null,chips:Array.isArray(j.chips)?j.chips:[]};
+AICACHE.set(key,{res,t:Date.now()});
+return res;
+}catch(e){if(e.name!=='AbortError')console.warn('[ai]',AICFG.provider,e.message);return null}
+finally{clearTimeout(to)}
+}
+(function(){
+const wrap=$('#zr');
+wrap.innerHTML=`<button id=zrb aria-label="Zillur Rahman — assistant" title="Zillur Rahman — assistant"><svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M8 8h16L8 24h16" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+<div id=zrp hidden role=dialog aria-modal=true aria-label="Zillur Rahman assistant">
+<div id=zrh><svg viewBox="0 0 32 32" width="16" height="16" aria-hidden="true"><path d="M8 8h16L8 24h16" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Zillur Rahman</span><span style="flex:1"></span><button id=zrv type=button title="Voice input" style="display:none">🎤</button><button id=zrx type=button title="Close">×</button></div>
+<div id=zrm role=log aria-live=polite></div>
+<div class=zchips></div>
+<form id=zrf><input id=zri placeholder="Ask anything about the app…" autocomplete=off><button class=p type=submit>Send</button></form>
+</div>`;
+const zp=$('#zrp'),zm=$('#zrm'),zi=$('#zri');
+let greeted=0,lastFocus=null;
+const CHIPS_DEFAULT=['How do I change layout?','PDF download','TXT download','Add a question','User Guide'];
+function zsetChips(arr){const c=wrap.querySelector('.zchips');c.innerHTML=(arr&&arr.length?arr:CHIPS_DEFAULT).slice(0,5).map(x=>`<button type=button data-zq="${E(x)}">${E(x)}</button>`).join('');c.querySelectorAll('[data-zq]').forEach(b=>b.onclick=()=>zask(b.dataset.zq))}
+function zpush(cls,html,rule,silent){
+const d=document.createElement('div');d.className='zmsg '+cls;
+const body=document.createElement('div');body.innerHTML=html;d.appendChild(body);
+if(rule&&(rule.r||rule.x)){
+const b=document.createElement('button');b.type='button';b.className='zgo p';b.textContent='→ '+(rule.lb||'Take me there');
+b.onclick=()=>{if(rule.x&&A[rule.x])A[rule.x]({dataset:{}});else{if(rule.f!=null)TB[rule.f]=rule.i;go(rule.r)}if(innerWidth<760)zopen(0)};
+const bar=document.createElement('div');bar.appendChild(b);d.appendChild(bar)}
+if(cls==='zbot'&&!silent){
+const fb=document.createElement('div');fb.className='zfb';
+fb.innerHTML='<button type=button data-fb=1 title="Helpful">👍</button><button type=button data-fb=0 title="Not helpful">👎</button>';
+fb.querySelectorAll('[data-fb]').forEach(btn=>btn.onclick=()=>{
+if(!+btn.dataset.fb){const me=[...zm.querySelectorAll('.zme')].pop();const q=me?me.textContent.slice(0,140):'';D.zlog=D.zlog||[];D.zlog.push({q,t:Date.now(),bad:1});sv();fb.innerHTML='<span class=mu>Logged for review</span>'}
+else fb.innerHTML='<span class=mu>Thanks</span>'});
+d.appendChild(fb)}
+zm.appendChild(d);zm.scrollTop=zm.scrollHeight}
+function zanswer(r){zpush('zbot',r.a,r);ZCTX.turns.push({role:'assistant',content:r.a.replace(/<[^>]+>/g,'')});ZCTX.lastRule=r;ZCTX.lastRoute=r.r||null;const c=(r.r&&/^paper\//.test(r.r))?zcaveats():[];if(c.length)c.forEach(x=>zpush('zbot',E(x),null,true));if(r.act&&ALLOWED.has(r.act)){try{A[r.act]({dataset:{}})}catch(e){}}zsetChips(r.next||null)}
+async function zask(q){
+q=(q||'').trim();if(!q)return;
+zpush('zme',E(q));ZCTX.turns.push({role:'user',content:q});
+if(ZCTX.lastRule&&/^(এটা|এটার|সেটা|সেটার|আরও|আর|পরের|পরবর্তী|তারপর|then|more|next|and|that|this)$/i.test(q.trim())){const nx=ZCTX.lastRule.next;if(nx&&nx.length){zpush('zbot','Did you mean: <b>'+E(nx[0])+'</b>?');zsetChips(nx);return}}
+const m=zmatch(q);
+if(m&&m.score>=.8){zanswer(m.rule);return}
+if(AICFG.enabled&&AICFG.provider&&PROVIDERS[AICFG.provider]){
+const needKey=PROVIDERS[AICFG.provider].needsKey;
+if(!needKey||AIKEY()){
+const ai=await aiAsk(q);
+if(ai&&ai.answer){let rr=null;const a=ai.action,gr=a&&(a.group==='s'||a.group==='n')?a.group:null;if(a&&a.type==='go'&&ROUTES.has(a.route)){if(gr)TB[gr]=a.tab|0;rr={r:a.route,lb:a.label||'Take me there',f:gr,i:a.tab|0}}zpush('zbot',E(ai.answer),rr);ZCTX.turns.push({role:'assistant',content:ai.answer});zsetChips(ai.chips);return}
+}}
+if(m){zanswer(m.rule);return}
+const f=findFeature(q);
+if(f){zpush('zbot',`"${E(q)}" — you'll find it under <b>${E(f.path.join(' → '))}</b>.`,{r:f.id,lb:'Take me there'});return}
+(D.zlog=D.zlog||[]).push({q,t:Date.now()});sv();
+zpush('zbot',"I couldn't find a match for that. It's been saved under Settings → Assistant Log so a rule can be added later.");
+zsetChips()}
+function zopen(v){if(v){lastFocus=document.activeElement;const a=document.querySelector('.app');a&&a.setAttribute('inert','');zp.hidden=false;zp.classList.remove('in');void zp.offsetWidth;zp.classList.add('in');if(!greeted){greeted=1;zpush('zbot','Assalam\'ulaikum! I\'m <b>Zillur Rahman</b>. Ask me where any option lives — I\'ll point you to it.',null,true)}zsetChips();zi.focus()}else{zp.hidden=true;const a=document.querySelector('.app');a&&a.removeAttribute('inert');lastFocus&&lastFocus.focus&&lastFocus.focus()}}
+$('#zrb').onclick=()=>zopen(zp.hidden);
+$('#zrx').onclick=()=>zopen(0);
+$('#zrf').onsubmit=e=>{e.preventDefault();const q=zi.value;zi.value='';zask(q)};
+const hist=[];
+document.addEventListener('keydown',e=>{
+if(e.key==='Escape'&&!zp.hidden){zopen(0);return}
+if((e.key==='/'||(e.key==='k'&&(e.ctrlKey||e.metaKey)))&&zp.hidden){const a=document.activeElement.tagName;if(a!=='INPUT'&&a!=='TEXTAREA'&&a!=='SELECT'){e.preventDefault();zopen(1);return}}
+if(zp.hidden)return;
+if(e.key==='ArrowUp'&&document.activeElement===zi){e.preventDefault();if(hist.length)zi.value=hist[0]}
+if(e.key==='ArrowDown'&&document.activeElement===zi){e.preventDefault();zi.value=''}});
+zi.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=zi.value.trim();if(v){hist.unshift(v);hist.length=Math.min(hist.length,20)}}});
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+if(SR){const rec=new SR();rec.lang='bn-BD';rec.interimResults=false;rec.maxAlternatives=1;const vbtn=$('#zrv');vbtn.style.display='';rec.onresult=e=>{const t=e.results[0][0].transcript;if(t)zask(t)};rec.onerror=()=>toast('Voice input failed.');vbtn.onclick=()=>{try{rec.start();toast('Listening…')}catch(e){}}}
+})();
+S['set/ai']=()=>{const p=PROVIDERS[AICFG.provider];
+return`<div class=card>${fl('@enabled','Enable AI assistant','c')}
+${fl('@provider','Provider','s',[['','None — rules only'],...Object.values(PROVIDERS).map(x=>[x.id,x.label])])}
+${p?`${p.id=='custom'?fl('@model','Model name'):fl('@model','Model','s',(p.models||[]).map(m=>[m,m]))}
+${p.id=='custom'?fl('@base','Base URL, e.g. http://192.168.0.5:8000/v1'):''}
+${p.needsKey?fl('@key','API key (stored only on this device)','password'):'<p class=mu>This provider runs locally — no key needed.</p>'}
+${p.needsKey?fl('@session','Session only — clear the key when this tab closes','c'):''}
+<div class=row><button class=p data-a=aitest>Test connection</button>${p.needsKey?'<button data-a=aiforget>Forget key</button>':''}<button data-a=aiclear>Clear cached answers</button></div>
+<p class=mu id=aitest></p>`:'<p class=mu>Rules-only mode runs fully offline and covers most questions. Pick a provider to enable the AI fallback.</p>'}
+</div>
+<div class=card><b>Which provider should I pick?</b>
+<table><tr><th>Use case</th><th>Pick</th></tr>
+<tr><td>Classroom, offline, no key</td><td><b>None</b></td></tr>
+<tr><td>Best Bangla, cheap</td><td><b>Gemini 2.0 Flash</b> or <b>Groq Llama-3.3-70B</b></td></tr>
+<tr><td>Fastest responses</td><td><b>Groq</b></td></tr>
+<tr><td>One key, many models</td><td><b>OpenRouter</b> (has <code>:free</code> models)</td></tr>
+<tr><td>Fully private, offline</td><td><b>Ollama</b> with <code>qwen2.5:3b</code></td></tr>
+<tr><td>Best structured output</td><td><b>OpenAI gpt-4o-mini</b></td></tr></table></div>
+<div class=card><b>CORS notes</b><p class=mu>OpenAI, Groq, OpenRouter, DeepSeek, Mistral, Together and Gemini work directly from the browser. Anthropic needs the direct-browser-access header (already set). <b>Ollama</b> requires <code>OLLAMA_ORIGINS=*</code> and will not work if this page is served over HTTPS.</p></div>`};
+S['set/log']=()=>{const log=D.zlog||[];const groups={};log.forEach(x=>{const k=norm(x.q||'');(groups[k]=groups[k]||{q:x.q,n:0,last:0});groups[k].n++;groups[k].last=Math.max(groups[k].last,x.t)});
+const rows=Object.values(groups).sort((a,b)=>b.n-a.n).slice(0,200);
+return`<div class=card><div class=row><b>${log.length}</b> unanswered ${log.length===1?'query':'queries'}.</div>
+${rows.length?`<table><tr><th>Query</th><th>Count</th><th>Last</th><th></th></tr>${rows.map(r=>`<tr><td>${E(r.q)}</td><td>${r.n}</td><td class=mu>${new Date(r.last).toLocaleDateString()}</td><td><button data-a=logRule data-q="${E(r.q)}">Copy rule template</button></td></tr>`).join('')}</table>`:'<p class=mu>Nothing logged yet. Every query matched a rule.</p>'}
+<div class=row><button class=d data-a=logClear>Clear log</button></div></div>
+<div class=card><b>How to add a rule</b><p class=mu>Open the file, find the <code>ZRULES</code> array, and append an object like:</p>
+<pre class=mu>{k:['your','keywords'],a:'Your answer here',r:'paper/setup',f:'s',i:1,lb:'Open Paper Setup'},</pre>
+<p class=mu>Then reload. The matcher will pick it up automatically.</p></div>`};
+Object.assign(A,{
+aitest:async()=>{const e=$('#aitest');if(!e)return;e.textContent='Testing…';const p=PROVIDERS[AICFG.provider];if(!p){e.textContent='Pick a provider first.';return}try{const r=await p.chat({system:'Reply with the single word: ok',messages:[{role:'user',content:'ping'}],model:AICFG.model,key:p.needsKey?AIKEY():undefined,temperature:0,maxTokens:10});e.textContent='✓ '+(r.text.trim().slice(0,40)||'(empty response)')}catch(x){e.textContent='✗ '+x.message}},
+aiforget:()=>{AICFG.key='';svAI();draw();toast('Key cleared.')},
+aiclear:()=>{AICACHE.clear();toast('Answer cache cleared.')},
+logRule:t=>{const q=t.dataset.q;const s=`{k:[${JSON.stringify(q)}],a:'',r:'',lb:''},`;try{navigator.clipboard.writeText(s);toast('Rule template copied to clipboard.')}catch(e){toast(s)}},
+logClear:()=>{D.zlog=[];sv();draw();toast('Log cleared.')}
+});
+document.addEventListener('input',e=>{const t=e.target,d=t.dataset;
+const qe=t.closest&&t.closest('#qe');if(qe&&!EQ&&qe._q){const q=RQ(qe,qe._q);qe._q=q;DQ=q;return}
+const k=d.k||d.g||d.d||d.x;if(!k)return;
+const v=t.type=='checkbox'?+t.checked:t.type=='number'?(t.value===''?'':+t.value):d.ls?t.value.split('\n').filter(x=>x.trim()):t.value;
+if(d.k){sp(P,k,v);D.draft=P;clearTimeout(tm);tm=setTimeout(sv,300);pv()}
+else if(d.g){sp(X,k,v);RF[R]&&RF[R]()}
+else if(d.x){sp(AICFG,k,v);if(k=='provider'){const m=PROVIDERS[v];AICFG.model=m&&m.id!='custom'?m.models[0]:''}svAI();if(k=='provider'||k=='enabled')draw()}
+else{sp(D,k,v);sv()}});
+document.addEventListener('change',e=>{const t=e.target,f=t.dataset.f,c=t.dataset.c,j=+t.dataset.j;
+if(t.dataset.pick){t.checked?PK[t.dataset.pick]=1:delete PK[t.dataset.pick]}
+else if(['type','five','en'].includes(f)){const r=t.closest('[data-q]');r._q=RQ(r,r._q);if(r.id=='qe'&&!EQ)DQ=r._q;mount(r,r._q)}
+else if(c=='sel')t.checked?SEL[t.dataset.id]=1:delete SEL[t.dataset.id];
+else if(c=='ssec'){SI=+t.value;PK={};draw()}
+else if(c=='im'){P.sec[SI].items[j].m=t.value===''?null:+t.value;D.draft=P;sv();pv()}
+else if(c=='imv'){if(t.value==='')return;const[it]=P.sec[SI].items.splice(j,1);P.sec[+t.value].items.push(it);ed()}
+else if(c=='pn'||c=='pv'){const p=D.p.find(x=>x.id==t.dataset.id);if(p){p[c=='pn'?'name':'vname']=t.value;sv()}}});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(t&&A[t.dataset.a])A[t.dataset.a](t)});
+const mv=(a,i,d)=>{const j=i+d;if(j>=0&&j<a.length)[a[i],a[j]]=[a[j],a[i]]},dq=t=>D.p.find(p=>p.id==t.dataset.id);
+const restore=o=>{if(!o||!Array.isArray(o.q))return toast('That data is not a valid backup.');const{snap,zlog,...r}=D,s=JSON.stringify(r);D={...fixD(o),zlog:D.zlog||[],snap:s,snapAt:Date.now()};P=lp(D.draft);D.draft=P;sv();draw();toast('Restored. Your previous data was kept as a snapshot.')};
+const expPaper=async p=>{const o=cl(p||P),ids=new Set(o.sec.flatMap(s=>s.items.map(i=>i.q)));const d={kind:'sqpm-paper',v:1,paper:o,questions:D.q.filter(q=>ids.has(q.id))};return saveText((o.name||'paper').replace(/[\\/:*?"<>|]/g,'-').slice(0,60)+'.json',JSON.stringify(d,null,1),null)};
+const saveTxt=async p=>{const o=lp(p||P);const name=(o.name||'question-paper').replace(/[\\/:*?"<>|]/g,'-').slice(0,60)+'.txt';dlText(name,paperToText(o));toast('Text file downloaded.')};
+Object.assign(A,{go:t=>go(t.dataset.r),back:()=>{R=H.pop();draw()},menu:()=>document.body.classList.toggle('nv'),tb:t=>{if(R=='bank/bulk'&&TB.b==2)syncRv();TB[t.dataset.f]=+t.dataset.i;draw()},
+saveq:()=>{const r=$('#qe'),q=RQ(r,r._q);if(!q.text.trim()&&!q.stem.trim())return toast('Enter the question text first.');saveQs([q]).then(([n])=>{toast(n?'Saved to bank':'Not saved');if(EQ){EQ=null;go('bank/all')}else{DQ={...nq(),sub:q.sub,cls:q.cls,ch:q.ch,type:q.type};draw()}})},
+cancelq:()=>{EQ=null;go('bank/all')},eq:t=>{EQ=t.dataset.id;go('bank/single')},selall:()=>{VIS.forEach(i=>SEL[i]=1);ql()},
+bdel:()=>{const n=Object.keys(SEL).length;if(!n)return toast('Tick questions first.');D.q=D.q.filter(q=>!SEL[q.id]);P.sec.forEach(s=>s.items=s.items.filter(i=>!SEL[i.q]));D.draft=P;SEL={};sv();ql();toast(n+' deleted')},
+bmv:()=>{const s=$('#mvs').value.trim(),c=$('#mvc').value.trim();if(!s&&!c)return toast('Enter a subject or class to move to.');D.q.forEach(q=>{if(SEL[q.id]){if(s)q.sub=s;if(c)q.cls=c}});sv();ql();toast('Moved')},
+parse:()=>{Rv=parse(X.BP.txt||'',X.BP);if(!Rv.length)return toast('Nothing to parse. Paste questions first.');TB.b=2;draw()},
+rvrm:t=>{syncRv();Rv.splice(+t.dataset.i,1);draw()},saveall:()=>{syncRv();saveQs(Rv).then(([n,s])=>{toast(n+' saved, '+s+' skipped');Rv=[];X.BP.txt='';TB.b=0;go('bank/all')})},
+sadd:()=>{P.sec.push(DSEC('Short',2,P.sec.length));ed()},
+saddstd:()=>{const n=P.sec.length;[['MCQ',1],['CQ',10],['Short',2]].forEach(([t,m],j)=>P.sec.push(DSEC(t,m,n+j)));ed();toast('Standard sections added with defaults.')},
+sdef:t=>{const i=+t.dataset.i,s=P.sec[i];P.sec[i]={...DSEC(s.type,s.marks,i),id:s.id,items:s.items};ed();toast('Section reset to defaults.')},
+sdefall:()=>{P.sec=P.sec.map((s,i)=>({...DSEC(s.type,s.marks,i),id:s.id,items:s.items}));ed();toast('All sections reset to defaults.')},
+sup:t=>{mv(P.sec,+t.dataset.i,-1);ed()},sdn:t=>{mv(P.sec,+t.dataset.i,1);ed()},
+sdup:t=>{const c=cl(P.sec[+t.dataset.i]);c.id=U();c.title+=' (copy)';P.sec.splice(+t.dataset.i+1,0,c);ed()},sdel:t=>{if(P.sec.length>1){P.sec.splice(+t.dataset.i,1);ed()}else toast('A paper needs at least one section.')},
+addsel:()=>{const sc=P.sec[SI];let w=0,n=0;Object.keys(PK).forEach(id=>{if(!D.q.some(q=>q.id==id))return;if(sc.items.some(i=>i.q==id))w++;sc.items.push({q:id,m:null});n++});PK={};if(!n)return toast('Tick questions first.');toast(w?`${w} question(s) were already in this section and were added again.`:'Added');ed()},
+apick:()=>{const a=X.AU,sc=P.sec[SI],chs=(a.ch||'').split(',').map(x=>x.trim()).filter(Boolean);let p=cand(sc).filter(q=>(!chs.length||chs.includes(q.ch))&&!sc.items.some(i=>i.q==q.id));
+if(a.av){const u=new Set(D.p.flatMap(x=>x.sec.flatMap(s=>(s.items||[]).map(i=>i.q))));p=p.filter(q=>!u.has(q.id))}
+a.o=='q'?p.sort((x,y)=>x.ch.localeCompare(y.ch,0,{numeric:true})):p.sort(()=>Math.random()-.5);const c={};PN=[];for(const q of p){if(PN.length>=(+a.n||5))break;if(+a.mx&&(c[q.ch]=(c[q.ch]||0)+1)>+a.mx)continue;PN.push(q.id)}
+PN.length||toast('No questions matched these rules.');draw()},aadd:()=>{PN.forEach(q=>P.sec[SI].items.push({q,m:null}));PN=[];ed()},
+rpcopy:()=>{const s=D.p.find(p=>p.id==X.RP.id);if(!s)return toast('Choose a saved paper first.');P=lp(cl(s));P.id=U();P.root=null;P.ver=1;if(+X.RP.so)P.sec.forEach(x=>x.items=[]);D.draft=P;sv();toast('Copied. Edit freely.');go('paper/setup')},
+iup:t=>{mv(P.sec[SI].items,+t.dataset.j,-1);ed()},idn:t=>{mv(P.sec[SI].items,+t.dataset.j,1);ed()},irm:t=>{P.sec[SI].items.splice(+t.dataset.j,1);ed()},
+print:()=>printP(P),pdf:()=>pdfOut(),pdfid:t=>{const p=dq(t);if(p)pdfOut(p)},
+txt:()=>saveTxt(),txpid:t=>{const p=dq(t);if(p)saveTxt(p)},
+newp:()=>{P=np();D.draft=P;sv();TB.s=0;SI=0;go('paper/setup')},
+savep:()=>{const p=cl(P);p.root=P.root=P.root||U();p.id=U();p.ver=1+D.p.filter(x=>x.root==p.root).length;p.vname=X.VN;p.at=Date.now();D.p.push(p);P.ver=p.ver;D.draft=P;sv();toast('Saved as version '+p.ver)},
+tplsave:()=>{if(!X.TN.trim())return toast('Name the template first.');const c=cl(P);c.sec.forEach(s=>s.items=[]);D.t.push({id:U(),name:X.TN.trim(),st:c.st,sec:c.sec});X.TN='';sv();draw();toast('Template saved')},
+tpluse:t=>{const x=D.t.find(y=>y.id==t.dataset.id);if(!x)return;P=np();P.st=sanSt(cl(x.st));P.sec=lp({sec:cl(x.sec)}).sec.map(s=>({...s,id:U()}));D.draft=P;sv();go('paper/setup')},tpldel:t=>{D.t=D.t.filter(x=>x.id!=t.dataset.id);sv();draw()},
+open:t=>{const p=dq(t);if(!p)return;P=lp(cl(p));D.draft=P;sv();TB.s=0;go('paper/setup')},pprint:t=>{const p=dq(t);if(p)printP(p)},pexpid:t=>{const p=dq(t);if(p)expPaper(p).then(h=>{if(h)toast('Exported to '+h.name)})},
+pdup:t=>{const p=dq(t);if(!p)return;const c=cl(p);c.id=U();c.root=c.id;c.ver=1;c.name+=' (copy)';c.at=Date.now();D.p.push(c);sv();svl()},
+pdel:t=>{D.p=D.p.filter(p=>p.id!=t.dataset.id);sv();svl()},
+bkx:()=>{const{snap,zlog,...r}=D,e=$('#ex');e.value=JSON.stringify(r);e.select();try{document.execCommand('copy')}catch(x){}D.bkAt=Date.now();sv();toast('Export ready. Paste it into a file to keep it.')},
+rst:()=>{try{restore(JSON.parse(X.RJ))}catch(x){toast('That text is not valid JSON.')}},
+snaprest:()=>{X.RJ=D.snap;A.rst()},
+bksave:async()=>{const{snap,zlog,...r}=D;const h=await saveText('sqpm-backup-'+new Date().toISOString().slice(0,10)+'.json',JSON.stringify(r),'bak');if(h){D.bkAt=Date.now();sv();toast('Backup written to '+h.name);if(R=='set/bak'||R=='dash')draw()}},
+bkopen:async()=>{const t=await openText();if(t==null)return;try{restore(JSON.parse(t))}catch(e){toast('That file is not valid JSON.')}},
+bkunlink:async()=>{await idb.del('bak');toast('File link cleared. The next save will ask again.');draw()},
+pexp:()=>{expPaper(P).then(h=>{if(h)toast('Exported to '+h.name)})},
+pimp:async()=>{const t=await openText();if(t==null)return;let o;try{o=JSON.parse(t)}catch(e){return toast('That file is not valid JSON.')}const p=o&&o.paper?o.paper:o;if(!p||!Array.isArray(p.sec))return toast('No paper was found in that file.');(Array.isArray(o.questions)?o.questions:[]).forEach(q=>{if(q&&q.id&&!D.q.some(x=>x.id===q.id))D.q.push(lq(q))});P=lp(cl(p));P.id=U();P.root=P.id;P.ver=1;D.draft=P;sv();toast('Paper imported.');go('paper/setup')}});
+addEventListener('resize',pv);
+draw();
+</script></body>
+  </html>
